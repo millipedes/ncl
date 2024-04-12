@@ -1,43 +1,23 @@
 #ifndef SYM_TAB_H
 #define SYM_TAB_H
 
-#include "ast.h"
-#include "type.h"
-#include "shape/include/ellipse.h"
-#include "shape/include/rectangle.h"
-#include "parser.tab.h"
+#include "general/include/linked_list.h"
 
-#define MAX_NAME 256
+#define DJB2_HASH_VALUE    5381
+#define DJB2_HASH_MULTIPLE 33
 
-typedef union {
-  char * the_string;
-  int the_bool;
-  double the_double;
-  int the_integer;
-  // void * array;
-  rectangle the_rect;
-  pixel the_color;
-  ellipse the_ellipse;
-} symbol;
+#define QTY_BUCKETS 37
+
+size_t djb2_hash(const char * value);
 
 typedef struct SYMBOL_TABLE_T {
-  char ** member_names;
-  symbol * members;
-  ncl_type * member_types;
-  int qty_members;
+  symbol_ll values[QTY_BUCKETS];
 } symbol_table;
 
-typedef struct RESULT_T {
-  symbol result;
-  ncl_type result_type;
-} result;
-
 symbol_table init_symbol_table(void);
-symbol_table add_member(symbol_table st, symbol new_symbol, char * literal,
-    ncl_type the_type);
-result find_symbol(symbol_table st, char * name);
-void debug_symbol_table(symbol_table st);
-void free_symbol_table(symbol_table st);
+symbol_table add_entry(symbol_table map, const char * name, const void * value,
+    ncl_type type);
+void debug_symbol_table(symbol_table map);
+void free_symbol_table(symbol_table map);
 
 #endif
-

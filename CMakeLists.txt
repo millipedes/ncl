@@ -3,12 +3,15 @@ project(new_project)
 
 # Source files
 set(SRC_DIR "${CMAKE_SOURCE_DIR}/src")
-set(TEST_DIR "${CMAKE_SOURCE_DIR}/tests")
+set(TEST_DIR "${CMAKE_SOURCE_DIR}/test")
 set(SRC_FILES
   ${SRC_DIR}/canvas/canvas.c
   ${SRC_DIR}/canvas/pixel.c
+  ${SRC_DIR}/general/linked_list.c
   ${SRC_DIR}/language/ast.c
   ${SRC_DIR}/language/internal_node_type.c
+  ${SRC_DIR}/language/symbol.c
+  ${SRC_DIR}/language/symbol_table.c
   ${SRC_DIR}/language/token.c
   ${SRC_DIR}/shape/ellipse.c
   ${SRC_DIR}/shape/line.c
