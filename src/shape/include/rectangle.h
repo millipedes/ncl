@@ -11,7 +11,7 @@
 
 #include "line.h"
 
-typedef struct RECTANGLE_t {
+typedef struct RECTANGLE_T {
   coord_2d center;
   pixel color;
   size_t height;

@@ -15,9 +15,10 @@ typedef struct SYMBOL_TABLE_T {
 } symbol_table;
 
 symbol_table init_symbol_table(void);
-symbol_table add_entry(symbol_table map, const char * name, const void * value,
+symbol_table add_entry(symbol_table st, const char * name, const void * value,
     ncl_type type);
-void debug_symbol_table(symbol_table map);
-void free_symbol_table(symbol_table map);
+symbol find_symbol(symbol_table st, const char * name);
+void debug_symbol_table(symbol_table st);
+void free_symbol_table(symbol_table st);
 
 #endif

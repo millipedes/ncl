@@ -9,6 +9,7 @@ set(SRC_FILES
   ${SRC_DIR}/canvas/pixel.c
   ${SRC_DIR}/general/linked_list.c
   ${SRC_DIR}/language/ast.c
+  ${SRC_DIR}/language/execute.c
   ${SRC_DIR}/language/internal_node_type.c
   ${SRC_DIR}/language/symbol.c
   ${SRC_DIR}/language/symbol_table.c

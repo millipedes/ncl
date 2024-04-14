@@ -10,6 +10,15 @@ symbol_ll init_symbol_ll(const char * name, const void * value, ncl_type type) {
   return the_symbol_ll;
 }
 
+symbol symbol_in_list(symbol_ll the_symbol_ll, const char * name) {
+  if(!strncmp(the_symbol_ll.name, name, MAX_SYMBOL_BYTES))
+    return the_symbol_ll.value;
+  else if(the_symbol_ll.next)
+    return symbol_in_list(*the_symbol_ll.next, name);
+  else
+    return (symbol){0};
+}
+
 void debug_symbol_ll(symbol_ll the_symbol_ll) {
   if(the_symbol_ll.name) {
     printf("`%s`: ", the_symbol_ll.name);

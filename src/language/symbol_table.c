@@ -8,22 +8,27 @@ size_t djb2_hash(const char * value) {
   return hash_value % QTY_BUCKETS;
 }
 
-symbol_table add_entry(symbol_table map, const char * name, const void * value,
+symbol_table add_entry(symbol_table st, const char * name, const void * value,
     ncl_type type) {
   size_t key = djb2_hash(value);
-  map.values[key] = append_symbol_ll(map.values[key], init_symbol_ll(name, value, type));
-  return map;
+  st.values[key] = append_symbol_ll(st.values[key], init_symbol_ll(name, value, type));
+  return st;
 }
 
-void debug_symbol_table(symbol_table map) {
+symbol find_symbol(symbol_table st, const char * name) {
+  size_t hash_value = djb2_hash(name);
+  return symbol_in_list(st.values[hash_value], name);
+}
+
+void debug_symbol_table(symbol_table st) {
   for(int i = 0; i < QTY_BUCKETS; i++) {
     printf("%d: ", i);
-    debug_symbol_ll(map.values[i]);
+    debug_symbol_ll(st.values[i]);
     printf("\n");
   }
 }
 
-void free_symbol_table(symbol_table map) {
+void free_symbol_table(symbol_table st) {
   for(int i = 0; i < QTY_BUCKETS; i++)
-    free_symbol_ll(map.values[i]);
+    free_symbol_ll(st.values[i]);
 }

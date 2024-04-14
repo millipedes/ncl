@@ -10,6 +10,7 @@ typedef struct SYMBOL_LL_T {
 } symbol_ll;
 
 symbol_ll init_symbol_ll(const char * name, const void * value, ncl_type type);
+symbol symbol_in_list(symbol_ll the_symbol_ll, const char * name);
 void debug_symbol_ll(symbol_ll the_symbol_ll);
 symbol_ll append_symbol_ll(symbol_ll head, symbol_ll tail);
 void free_symbol_ll(symbol_ll the_symbol_ll);
