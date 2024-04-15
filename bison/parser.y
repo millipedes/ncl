@@ -35,7 +35,7 @@ const char * token_type_to_string(size_t category);
 %type <the_ast> shape_assignment rectangle_declaration shape point_declaration
 %type <the_ast> pick_NEWLINE_stmt ellipse_declaration line_declaration
 %type <the_ast> to_declaration from_declaration for_loop expression
-%type <the_ast> expression_assignment if_stmt expression_list
+%type <the_ast> expression_assignment if_stmt
 %type <the_ast> rectangle_parameter rectangle_parameters height_declaration
 %type <the_ast> width_declaration major_axis_declaration minor_axis_declaration
 %type <the_ast> ellipse_parameters ellipse_parameter thickness_declartaion
@@ -56,6 +56,7 @@ canvas_declaration
     $$ = init_ast((token){0}, IN_CANVAS_DECLARATION);
     $$ = add_child($$, $3);
   }
+  | CANVAS LPAR RPAR
   ;
 
 canvas_parameters
@@ -71,7 +72,6 @@ canvas_parameter
   : height_declaration
   | width_declaration
   | color_declaration
-  | STRING
   ;
 
 color_declaration
@@ -149,103 +149,77 @@ expression_assignment
   }
   ;
 
-expression_list
-  : expression
-  | expression_list COMMA expression {
-    $$ = init_ast((token){0}, IN_EXPRESSION_LIST);
+expression
+  : DOUBLE
+  | INTEGER
+  | NAME
+  | STRING
+  | TRUE
+  | FALSE
+  | expression PLUS expression {
+    $$ = init_ast((token){0}, IN_EXPRESSION);
     $$ = add_child($$, $1);
+    $$ = add_child($$, $2);
     $$ = add_child($$, $3);
   }
+  | expression MINUS expression {
+    $$ = init_ast((token){0}, IN_EXPRESSION);
+    $$ = add_child($$, $1);
+    $$ = add_child($$, $2);
+    $$ = add_child($$, $3);
+  }
+  | expression STAR expression {
+    $$ = init_ast((token){0}, IN_EXPRESSION);
+    $$ = add_child($$, $1);
+    $$ = add_child($$, $2);
+    $$ = add_child($$, $3);
+  }
+  | expression SLASH expression {
+    $$ = init_ast((token){0}, IN_EXPRESSION);
+    $$ = add_child($$, $1);
+    $$ = add_child($$, $2);
+    $$ = add_child($$, $3);
+  }
+  | expression PERCENT expression {
+    $$ = init_ast((token){0}, IN_EXPRESSION);
+    $$ = add_child($$, $1);
+    $$ = add_child($$, $2);
+    $$ = add_child($$, $3);
+  }
+  | expression LESS expression {
+    $$ = init_ast((token){0}, IN_EXPRESSION);
+    $$ = add_child($$, $1);
+    $$ = add_child($$, $2);
+    $$ = add_child($$, $3);
+  }
+  | expression GREATER expression {
+    $$ = init_ast((token){0}, IN_EXPRESSION);
+    $$ = add_child($$, $1);
+    $$ = add_child($$, $2);
+    $$ = add_child($$, $3);
+  }
+  | expression LESSEQUAL expression {
+    $$ = init_ast((token){0}, IN_EXPRESSION);
+    $$ = add_child($$, $1);
+    $$ = add_child($$, $2);
+    $$ = add_child($$, $3);
+  }
+  | expression GREATEREQUAL expression {
+    $$ = init_ast((token){0}, IN_EXPRESSION);
+    $$ = add_child($$, $1);
+    $$ = add_child($$, $2);
+    $$ = add_child($$, $3);
+  }
+  | MINUS expression {
+    $$ = init_ast((token){0}, IN_EXPRESSION);
+    $$ = add_child($$, $1);
+    $$ = add_child($$, $2);
+  }
+  | LPAR expression RPAR {
+    $$ = init_ast((token){0}, IN_EXPRESSION);
+    $$ = add_child($$, $2);
+  }
   ;
-
-expression : DOUBLE
-           | INTEGER
-           | NAME
-           | STRING
-           | NAME LSQB expression RSQB {
-             $$ = init_ast((token){0}, IN_EXPRESSION);
-             $$ = add_child($$, $1);
-             $$ = add_child($$, $2);
-             $$ = add_child($$, $3);
-             $$ = add_child($$, $4);
-           }
-           | LSQB RSQB {
-             $$ = init_ast((token){0}, IN_EXPRESSION);
-             $$ = add_child($$, $1);
-             $$ = add_child($$, $2);
-           }
-           | LSQB expression_list RSQB {
-             $$ = init_ast((token){0}, IN_EXPRESSION);
-             $$ = add_child($$, $1);
-             $$ = add_child($$, $2);
-             $$ = add_child($$, $3);
-           }
-           | TRUE
-           | FALSE
-           | expression PLUS expression {
-             $$ = init_ast((token){0}, IN_EXPRESSION);
-             $$ = add_child($$, $1);
-             $$ = add_child($$, $2);
-             $$ = add_child($$, $3);
-           }
-           | expression MINUS expression {
-             $$ = init_ast((token){0}, IN_EXPRESSION);
-             $$ = add_child($$, $1);
-             $$ = add_child($$, $2);
-             $$ = add_child($$, $3);
-           }
-           | expression STAR expression {
-             $$ = init_ast((token){0}, IN_EXPRESSION);
-             $$ = add_child($$, $1);
-             $$ = add_child($$, $2);
-             $$ = add_child($$, $3);
-           }
-           | expression SLASH expression {
-             $$ = init_ast((token){0}, IN_EXPRESSION);
-             $$ = add_child($$, $1);
-             $$ = add_child($$, $2);
-             $$ = add_child($$, $3);
-           }
-           | expression PERCENT expression {
-             $$ = init_ast((token){0}, IN_EXPRESSION);
-             $$ = add_child($$, $1);
-             $$ = add_child($$, $2);
-             $$ = add_child($$, $3);
-           }
-           | expression LESS expression {
-             $$ = init_ast((token){0}, IN_EXPRESSION);
-             $$ = add_child($$, $1);
-             $$ = add_child($$, $2);
-             $$ = add_child($$, $3);
-           }
-           | expression GREATER expression {
-             $$ = init_ast((token){0}, IN_EXPRESSION);
-             $$ = add_child($$, $1);
-             $$ = add_child($$, $2);
-             $$ = add_child($$, $3);
-           }
-           | expression LESSEQUAL expression {
-             $$ = init_ast((token){0}, IN_EXPRESSION);
-             $$ = add_child($$, $1);
-             $$ = add_child($$, $2);
-             $$ = add_child($$, $3);
-           }
-           | expression GREATEREQUAL expression {
-             $$ = init_ast((token){0}, IN_EXPRESSION);
-             $$ = add_child($$, $1);
-             $$ = add_child($$, $2);
-             $$ = add_child($$, $3);
-           }
-           | MINUS expression {
-             $$ = init_ast((token){0}, IN_EXPRESSION);
-             $$ = add_child($$, $1);
-             $$ = add_child($$, $2);
-           }
-           | LPAR expression RPAR {
-             $$ = init_ast((token){0}, IN_EXPRESSION);
-             $$ = add_child($$, $2);
-           }
-           ;
 
 shape_assignment
   : NAME EQUAL shape {
