@@ -1,5 +1,18 @@
 #include "include/symbol.h"
 
+const char * ncl_type_to_string(ncl_type type) {
+  switch(type) {
+    case NCL_STRING:    return "String";
+    case NCL_BOOL:      return "Bool";
+    case NCL_DOUBLE:    return "Double";
+    case NCL_INT:       return "Int";
+    case NCL_COLOR:     return "Color";
+    case NCL_RECTANGLE: return "Rectangle";
+    case NCL_ELLIPSE:   return "Ellipse";
+  }
+  return NULL;
+}
+
 symbol init_symbol(const void * value, ncl_type type) {
   symbol the_symbol = {0};
   the_symbol.type = type;
@@ -109,6 +122,181 @@ symbol_value to_ellipse(const void * value) {
     thickness
   };
   return the_symbol_value;
+}
+
+symbol add_symbol(symbol s1, symbol s2) {
+  symbol ret = {0};
+  assert_symbol_type_compatability(s1, s2);
+  switch(s1.type) {
+    case NCL_STRING:
+      symbol concat_string = {0};
+      size_t s1_len = strnlen(s1.value.the_string, MAX_SYMBOL_BYTES);
+      size_t s2_len = strnlen(s2.value.the_string, MAX_SYMBOL_BYTES);
+      size_t concat_string_len = s1_len + s2_len + 1;
+      concat_string.value.the_string = calloc(concat_string_len, sizeof(char));
+      strncat(concat_string.value.the_string, s1.value.the_string, s1_len);
+      strncat(concat_string.value.the_string + s1_len, s2.value.the_string, s2_len + 1);
+      break;
+    case NCL_DOUBLE:
+      ret.type = NCL_DOUBLE;
+      ret.value.the_double = s1.value.the_double + s2.value.the_double;
+      break;
+    case NCL_INT:
+      ret.type = NCL_INT;
+      ret.value.the_integer = s1.value.the_integer + s2.value.the_integer;
+      break;
+    default:
+      OPERATOR_NOT_SUPPORTED(ADD_SYMBOL, Addition)
+  }
+  return ret;
+}
+
+symbol sub_symbol(symbol s1, symbol s2) {
+  symbol ret = {0};
+  assert_symbol_type_compatability(s1, s2);
+  switch(s1.type) {
+    case NCL_DOUBLE:
+      ret.type = NCL_DOUBLE;
+      ret.value.the_double = s1.value.the_double - s2.value.the_double;
+      break;
+    case NCL_INT:
+      ret.type = NCL_INT;
+      ret.value.the_integer = s1.value.the_integer - s2.value.the_integer;
+      break;
+    default:
+      OPERATOR_NOT_SUPPORTED(SUB_SYMBOL, Subtraction)
+  }
+  return ret;
+}
+
+symbol mult_symbol(symbol s1, symbol s2) {
+  symbol ret = {0};
+  assert_symbol_type_compatability(s1, s2);
+  switch(s1.type) {
+    case NCL_DOUBLE:
+      ret.type = NCL_DOUBLE;
+      ret.value.the_double = s1.value.the_double * s2.value.the_double;
+      break;
+    case NCL_INT:
+      ret.type = NCL_INT;
+      ret.value.the_integer = s1.value.the_integer * s2.value.the_integer;
+      break;
+    default:
+      OPERATOR_NOT_SUPPORTED(MULT_SYMBOL, Multiplication)
+  }
+  return ret;
+}
+
+symbol div_symbol(symbol s1, symbol s2) {
+  symbol ret = {0};
+  assert_symbol_type_compatability(s1, s2);
+  switch(s1.type) {
+    case NCL_DOUBLE:
+      ret.type = NCL_DOUBLE;
+      ret.value.the_double = s1.value.the_double / s2.value.the_double;
+      break;
+    case NCL_INT:
+      ret.type = NCL_INT;
+      ret.value.the_integer = s1.value.the_integer / s2.value.the_integer;
+      break;
+    default:
+      OPERATOR_NOT_SUPPORTED(DIV_SYMBOL, Division)
+  }
+  return ret;
+}
+
+symbol mod_symbol(symbol s1, symbol s2) {
+  symbol ret = {0};
+  assert_symbol_type_compatability(s1, s2);
+  switch(s1.type) {
+    case NCL_INT:
+      ret.type = NCL_INT;
+      ret.value.the_integer = s1.value.the_integer % s2.value.the_integer;
+      break;
+    default:
+      OPERATOR_NOT_SUPPORTED(MOD_SYMBOL, Modulus)
+  }
+  return ret;
+}
+
+symbol less_symbol(symbol s1, symbol s2) {
+  symbol ret = {0};
+  assert_symbol_type_compatability(s1, s2);
+  switch(s1.type) {
+    case NCL_DOUBLE:
+      ret.type = NCL_DOUBLE;
+      ret.value.the_double = s1.value.the_double < s2.value.the_double;
+      break;
+    case NCL_INT:
+      ret.type = NCL_INT;
+      ret.value.the_integer = s1.value.the_integer < s2.value.the_integer;
+      break;
+    default:
+      OPERATOR_NOT_SUPPORTED(LESS_SYMBOL, Less than)
+  }
+  return ret;
+}
+
+symbol great_symbol(symbol s1, symbol s2) {
+  symbol ret = {0};
+  assert_symbol_type_compatability(s1, s2);
+  switch(s1.type) {
+    case NCL_DOUBLE:
+      ret.type = NCL_DOUBLE;
+      ret.value.the_double = s1.value.the_double > s2.value.the_double;
+      break;
+    case NCL_INT:
+      ret.type = NCL_INT;
+      ret.value.the_integer = s1.value.the_integer > s2.value.the_integer;
+      break;
+    default:
+      OPERATOR_NOT_SUPPORTED(GREAT_SYMBOL, Greater than)
+  }
+  return ret;
+}
+
+symbol less_equal_symbol(symbol s1, symbol s2) {
+  symbol ret = {0};
+  assert_symbol_type_compatability(s1, s2);
+  switch(s1.type) {
+    case NCL_DOUBLE:
+      ret.type = NCL_DOUBLE;
+      ret.value.the_double = s1.value.the_double <= s2.value.the_double;
+      break;
+    case NCL_INT:
+      ret.type = NCL_INT;
+      ret.value.the_integer = s1.value.the_integer <= s2.value.the_integer;
+      break;
+    default:
+      OPERATOR_NOT_SUPPORTED(LESS_EQUAL_SYMBOL, Less or equal to)
+  }
+  return ret;
+}
+
+symbol great_equal_symbol(symbol s1, symbol s2) {
+  symbol ret = {0};
+  assert_symbol_type_compatability(s1, s2);
+  switch(s1.type) {
+    case NCL_DOUBLE:
+      ret.type = NCL_DOUBLE;
+      ret.value.the_double = s1.value.the_double >= s2.value.the_double;
+      break;
+    case NCL_INT:
+      ret.type = NCL_INT;
+      ret.value.the_integer = s1.value.the_integer >= s2.value.the_integer;
+      break;
+    default:
+      OPERATOR_NOT_SUPPORTED(GREAT_EQUAL_SYMBOL, Greater or equal to)
+  }
+  return ret;
+}
+
+void assert_symbol_type_compatability(symbol s1, symbol s2) {
+  if(s1.type != s2.type) {
+    fprintf(stderr, "Value type `%s` is not compatable with value type `%s`, "
+        "Exiting\n", ncl_type_to_string(s1.type), ncl_type_to_string(s2.type));
+    exit(1);
+  }
 }
 
 void debug_symbol(symbol the_symbol) {

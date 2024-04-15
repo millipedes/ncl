@@ -16,6 +16,10 @@
 #define MAX_COL 255
 #define MIN_COL 0
 
+#define DEFAULT_R 0
+#define DEFAULT_G 35
+#define DEFAULT_B 66
+
 typedef struct PIXEL_T {
   uint8_t r;
   uint8_t g;

@@ -15,6 +15,15 @@
 
 #define PPM_HEADER "P3"
 
+#define DEFAULT_CANVAS_WIDTH 1000
+#define DEFAULT_CANVAS_HEIGHT 1000
+
+typedef struct CANVAS_PARAMETERS_T {
+  pixel color;
+  int height;
+  int width;
+} canvas_parameters;
+
 typedef struct CANVAS_T {
   pixel ** values;
   int height;
@@ -22,6 +31,7 @@ typedef struct CANVAS_T {
 } canvas;
 
 canvas init_canvas(int height, int width, uint8_t r, uint8_t g, uint8_t b);
+canvas set_with_color(canvas the_canvas, const pixel color);
 void debug_canvas(canvas the_canvas);
 void write_canvas_ppm(canvas the_canvas, const char * file_name);
 canvas read_canvas_ppm(const char * file_name);

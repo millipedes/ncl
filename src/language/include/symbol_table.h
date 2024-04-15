@@ -17,6 +17,8 @@ typedef struct SYMBOL_TABLE_T {
 symbol_table init_symbol_table(void);
 symbol_table add_entry(symbol_table st, const char * name, const void * value,
     ncl_type type);
+symbol_table add_symbol_to_table(symbol_table st, const char * name,
+    symbol the_symbol);
 symbol find_symbol(symbol_table st, const char * name);
 void debug_symbol_table(symbol_table st);
 void free_symbol_table(symbol_table st);

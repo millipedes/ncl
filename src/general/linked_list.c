@@ -1,11 +1,22 @@
 #include "include/linked_list.h"
 
-symbol_ll init_symbol_ll(const char * name, const void * value, ncl_type type) {
+symbol_ll init_symbol_ll_from_data(const char * name, const void * value,
+    ncl_type type) {
   symbol_ll the_symbol_ll = {0};
   size_t name_len = strnlen(name, MAX_SYMBOL_BYTES) + 1;
   the_symbol_ll.name = calloc(name_len, sizeof(char));
   strncpy(the_symbol_ll.name, name, name_len);
   the_symbol_ll.value = init_symbol(value, type);
+  the_symbol_ll.next = NULL;
+  return the_symbol_ll;
+}
+
+symbol_ll init_symbol_ll_from_symbol(const char * name, symbol the_symbol) {
+  symbol_ll the_symbol_ll = {0};
+  size_t name_len = strnlen(name, MAX_SYMBOL_BYTES) + 1;
+  the_symbol_ll.name = calloc(name_len, sizeof(char));
+  strncpy(the_symbol_ll.name, name, name_len);
+  the_symbol_ll.value = the_symbol;
   the_symbol_ll.next = NULL;
   return the_symbol_ll;
 }
