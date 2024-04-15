@@ -9,17 +9,18 @@ int main(void) {
   // debug_token(the_token);
   // free_token(the_token);
   symbol_table st = (symbol_table){0};
-  yyin = fopen("../docs/example_001/hello_canvas.ncl", "r");
+  yyin = fopen("../docs/example_002/ncl_expressions.ncl", "r");
   if(!yyin) {
     printf("unable to open input file\n");
     exit(1);
   }
   yyparse();
-  canvas the_canvas = execute_canvas_declaration(head, st);
+  debug_ast(head, 0);
+  canvas the_canvas = execute_canvas_declaration(head, &st);
   write_canvas_png(the_canvas, "first_picture.png");
   free_canvas(the_canvas);
+  debug_symbol_table(st);
   free_symbol_table(st);
-  // debug_ast(head, 0);
   free_ast(head);
   fclose(yyin);
   yylex_destroy();

@@ -1,2 +1,2 @@
-canvas(height(1080), width(1920), color(0, 255, 0)) {
+canvas(height(1000 + 80), width(1920), color(0, 255, 0)) {
 }

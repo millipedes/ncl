@@ -1,20 +1,23 @@
 #include "include/execute.h"
 
-canvas execute_canvas_declaration(ast head, symbol_table st) {
+canvas execute_canvas_declaration(ast head, symbol_table * st) {
   canvas the_canvas = (canvas){0};
   canvas_parameters params = (canvas_parameters){
     (pixel){DEFAULT_R, DEFAULT_G, DEFAULT_B},
     DEFAULT_CANVAS_HEIGHT,
     DEFAULT_CANVAS_WIDTH
   };
-  if(head.children)
+  if(head.children) {
     execute_canvas_parameters(head.children[0], st, &params);
+    execute_star_newline_stmt(head.children[1], st);
+  }
+
   the_canvas = init_canvas(params.height, params.width, params.color.r,
       params.color.g, params.color.b);
   return the_canvas;
 }
 
-void execute_canvas_parameters(ast head, symbol_table st,
+void execute_canvas_parameters(ast head, symbol_table * st,
     canvas_parameters * params) {
   switch(head.category) {
     case IN_HEIGHT_DECLARATION:
@@ -42,7 +45,7 @@ void execute_canvas_parameters(ast head, symbol_table st,
           params->width = width.value.the_double;
           break;
         default:
-          fprintf(stderr, "[EXECUTE_CANVAS_PARAMETERS]: Unsupported with type"
+          fprintf(stderr, "[EXECUTE_CANVAS_PARAMETERS]: Unsupported width type"
               "\n");
           exit(1);
       }
@@ -58,20 +61,48 @@ void execute_canvas_parameters(ast head, symbol_table st,
     execute_canvas_parameters(head.children[i], st, params);
 }
 
-symbol execute_width_declaration(ast head, symbol_table st) {
+void execute_star_newline_stmt(ast head, symbol_table * st) {
+  for(size_t i = 0; i < head.qty_children; i++) {
+    switch(head.children[i].category) {
+      case IN_STAR_NEWLINE_STMT:
+        execute_star_newline_stmt(head.children[i], st);
+        break;
+      case IN_PICK_NEWLINE_STMT:
+        execute_pick_newline_stmt(head.children[i], st);
+        break;
+    }
+  }
+}
+
+void execute_pick_newline_stmt(ast head, symbol_table * st) {
+  switch(head.children[0].category) {
+    case IN_EXPRESSION_ASSIGNMENT:
+      *st = execute_expression_assignment(head.children[0], st);
+      break;
+  }
+}
+
+symbol_table execute_expression_assignment(ast head, symbol_table * st) {
+  return add_symbol_to_table(*st, head.children[0].the_token.literal,
+      execute_expression(head.children[2], st));
+}
+
+symbol execute_width_declaration(ast head, symbol_table * st) {
   return execute_expression(head.children[0], st);
 }
 
-symbol execute_height_declaration(ast head, symbol_table st) {
+symbol execute_height_declaration(ast head, symbol_table * st) {
   return execute_expression(head.children[0], st);
 }
 
-symbol execute_color_declaration(ast head, symbol_table st) {
+symbol execute_color_declaration(ast head, symbol_table * st) {
   symbol r = execute_expression(head.children[0], st);
   symbol g = execute_expression(head.children[1], st);
   symbol b = execute_expression(head.children[2], st);
   if(r.type == NCL_INT && g.type == NCL_INT && b.type == NCL_INT) {
-    pixel the_color = (pixel){r.value.the_integer, g.value.the_integer, b.value.the_integer};
+    pixel the_color = (pixel){r.value.the_integer,
+                              g.value.the_integer,
+                              b.value.the_integer};
     return init_symbol(&the_color, NCL_COLOR);
   } else {
     fprintf(stderr, "[EXECUTE_COLOR_DECLARATION]: Only int type is supported "
@@ -82,7 +113,7 @@ symbol execute_color_declaration(ast head, symbol_table st) {
   }
 }
 
-symbol execute_expression(ast head, symbol_table st) {
+symbol execute_expression(ast head, symbol_table * st) {
   symbol return_symbol = {0};
   if(!head.children)
     return execute_symbol(head, st);
@@ -93,6 +124,14 @@ symbol execute_expression(ast head, symbol_table st) {
     case MINUS:
       return sub_symbol(execute_expression(head.children[0], st),
           execute_expression(head.children[2], st));
+    case INTEGER: // This is for unary minus
+      return_symbol.type = NCL_INT;
+      return_symbol.value.the_integer = -atoi(head.children[1].the_token.literal);
+      break;
+    case DOUBLE:  // This is for unary minus
+      return_symbol.type = NCL_DOUBLE;
+      return_symbol.value.the_integer = -atof(head.children[1].the_token.literal);
+      break;
     case STAR:
       return mult_symbol(execute_expression(head.children[0], st),
           execute_expression(head.children[2], st));
@@ -118,7 +157,7 @@ symbol execute_expression(ast head, symbol_table st) {
   return return_symbol;
 }
 
-symbol execute_symbol(ast head, symbol_table st) {
+symbol execute_symbol(ast head, symbol_table * st) {
   symbol return_symbol = {0};
   switch(head.the_token.type) {
   case STRING:
@@ -141,7 +180,7 @@ symbol execute_symbol(ast head, symbol_table st) {
     return_symbol.value.the_integer = atoi(head.the_token.literal);
     break;
   case NAME:
-    return_symbol = find_symbol(st, head.the_token.literal);
+    return_symbol = find_symbol(*st, head.the_token.literal);
     if(return_symbol.type)
       return return_symbol;
     fprintf(stderr, "[EXECUTE_EXPRESSION]: Unknown Variable: `%s`, Exiting\n",

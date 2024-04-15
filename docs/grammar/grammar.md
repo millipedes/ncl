@@ -4,6 +4,16 @@ program -> canvas_declaration LBRACE star_NEWLINE_stmt RBRACE
 canvas_declaration -> CANVAS LPAR canvas_parameters RPAR
                     | CANVAS LPAR RPAR
 
+star_NEWLINE_stmt -> pick_NEWLINE_stmt star_NEWLINE_stmt
+                   | NEWLINE
+
+pick_NEWLINE_stmt -> statement
+                   | NEWLINE
+
+statement -> expression_assignement
+
+expression_assignement -> NAME EQUAL expression
+
 canvas_parameters -> canvas_parameters COMMA canvas_parameter
                    | canvas_parameter
 
@@ -33,22 +43,25 @@ expression -> DOUBLE
             | expression LESSEQUAL expression
             | expression GREATEREQUAL expression
 
-CANVAS -> canvas
-HEIGHT -> height
-WIDTH -> width
-COLOR -> color
-LPAR   -> (
-RPAR   -> )
-LBRACE -> {
-RBRACE -> }
-COMMA -> ,
-PLUS -> +
-MINUS -> -
-STAR -> *
-SLASH -> /
-PERCENT -> %
-LESS -> <
-GREATER -> >
-LESSEQUAL -> <=
+CANVAS       -> canvas
+HEIGHT       -> height
+WIDTH        -> width
+COLOR        -> color
+LPAR         -> (
+RPAR         -> )
+LBRACE       -> {
+RBRACE       -> }
+COMMA        -> ,
+PLUS         -> +
+MINUS        -> -
+STAR         -> *
+SLASH        -> /
+PERCENT      -> %
+LESS         -> <
+GREATER      -> >
+LESSEQUAL    -> <=
 GREATEREQUAL -> >=
+NEWLINE      -> '\n'
+EQUAL        -> =
+name         -> (A-Za-z_)+(A-Za-z0-9_)*
 ```
