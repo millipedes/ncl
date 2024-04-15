@@ -89,31 +89,31 @@ symbol execute_expression(ast head, symbol_table st) {
   switch(head.children[1].the_token.type) {
     case PLUS:
       return add_symbol(execute_expression(head.children[0], st),
-          execute_expression(head.children[1], st));
+          execute_expression(head.children[2], st));
     case MINUS:
       return sub_symbol(execute_expression(head.children[0], st),
-          execute_expression(head.children[1], st));
+          execute_expression(head.children[2], st));
     case STAR:
       return mult_symbol(execute_expression(head.children[0], st),
-          execute_expression(head.children[1], st));
+          execute_expression(head.children[2], st));
     case SLASH:
       return div_symbol(execute_expression(head.children[0], st),
-          execute_expression(head.children[1], st));
+          execute_expression(head.children[2], st));
     case PERCENT:
       return mod_symbol(execute_expression(head.children[0], st),
-          execute_expression(head.children[1], st));
+          execute_expression(head.children[2], st));
     case LESS:
       return less_symbol(execute_expression(head.children[0], st),
-          execute_expression(head.children[1], st));
+          execute_expression(head.children[2], st));
     case GREATER:
       return great_symbol(execute_expression(head.children[0], st),
-          execute_expression(head.children[1], st));
+          execute_expression(head.children[2], st));
     case LESSEQUAL:
       return less_equal_symbol(execute_expression(head.children[0], st),
-          execute_expression(head.children[1], st));
+          execute_expression(head.children[2], st));
     case GREATEREQUAL:
       return great_equal_symbol(execute_expression(head.children[0], st),
-          execute_expression(head.children[1], st));
+          execute_expression(head.children[2], st));
   }
   return return_symbol;
 }

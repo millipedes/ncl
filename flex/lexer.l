@@ -49,10 +49,8 @@ void print_unmatched_quote(char * literal, int line_no);
 [ \t]
 
 #.*          { return allocate_ast(COMMENT); }
-"append"     { return allocate_ast(APPEND); }
 "break"      { return allocate_ast(BREAK); }
 "color"      { return allocate_ast(COLOR); }
-"east"       { return allocate_ast(EAST); }
 "for"        { return allocate_ast(FOR); }
 "height"     { return allocate_ast(HEIGHT); }
 "width"      { return allocate_ast(WIDTH); }
@@ -62,13 +60,10 @@ void print_unmatched_quote(char * literal, int line_no);
 "to"         { return allocate_ast(TO); }
 "true"       { return allocate_ast(TRUE); }
 "from"       { return allocate_ast(FROM); }
-"west"       { return allocate_ast(WEST); }
 "false"      { return allocate_ast(FALSE); }
 "point"      { return allocate_ast(POINT); }
-"south"      { return allocate_ast(SOUTH); }
 "write"      { return allocate_ast(WRITE); }
 "range"      { return allocate_ast(RANGE); }
-"north"      { return allocate_ast(NORTH); }
 "minor_axis" { return allocate_ast(MINOR_AXIS); }
 "major_axis" { return allocate_ast(MAJOR_AXIS); }
 "canvas"     { return allocate_ast(CANVAS); }
