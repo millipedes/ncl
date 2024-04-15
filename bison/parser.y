@@ -56,7 +56,9 @@ canvas_declaration
     $$ = init_ast((token){0}, IN_CANVAS_DECLARATION);
     $$ = add_child($$, $3);
   }
-  | CANVAS LPAR RPAR
+  | CANVAS LPAR RPAR {
+    $$ = init_ast((token){0}, IN_CANVAS_DECLARATION);
+  }
   ;
 
 canvas_parameters

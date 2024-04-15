@@ -1,3 +1,4 @@
+The implemented grammar is as follows:
 ```
 program -> canvas_declaration LBRACE star_NEWLINE_stmt RBRACE
 

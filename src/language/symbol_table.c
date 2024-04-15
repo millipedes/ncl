@@ -8,18 +8,10 @@ size_t djb2_hash(const char * value) {
   return hash_value % QTY_BUCKETS;
 }
 
-symbol_table add_entry(symbol_table st, const char * name, const void * value,
-    ncl_type type) {
-  size_t key = djb2_hash(name);
-  st.values[key] = append_symbol_ll(st.values[key],
-      init_symbol_ll_from_data(name, value, type));
-  return st;
-}
-
 symbol_table add_symbol_to_table(symbol_table st, const char * name,
     symbol the_symbol) {
   size_t key = djb2_hash(name);
-  st.values[key] = append_symbol_ll(st.values[key],
+  st.values[key] = update_symbol_ll(st.values[key],
       init_symbol_ll_from_symbol(name, the_symbol));
   return st;
 }

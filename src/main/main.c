@@ -43,13 +43,13 @@ int main(void) {
   // free_symbol_ll(the_symbol_ll);
 
   // symbol_table map = {0};
-  // map = add_entry(map, "a", a, NCL_STRING);
-  // map = add_entry(map, "b", &b, NCL_BOOL);
-  // map = add_entry(map, "c", &c, NCL_DOUBLE);
-  // map = add_entry(map, "d", &d, NCL_INT);
-  // map = add_entry(map, "e", &e, NCL_COLOR);
-  // map = add_entry(map, "f", &f, NCL_RECTANGLE);
-  // map = add_entry(map, "g", &g, NCL_ELLIPSE);
+  // map = add_symbol_to_table(map, "a", init_symbol(a,  NCL_STRING));
+  // map = add_symbol_to_table(map, "b", init_symbol(&b, NCL_BOOL));
+  // map = add_symbol_to_table(map, "c", init_symbol(&c, NCL_DOUBLE));
+  // map = add_symbol_to_table(map, "d", init_symbol(&d, NCL_INT));
+  // map = add_symbol_to_table(map, "e", init_symbol(&e, NCL_COLOR));
+  // map = add_symbol_to_table(map, "f", init_symbol(&f, NCL_RECTANGLE));
+  // map = add_symbol_to_table(map, "g", init_symbol(&g, NCL_ELLIPSE));
   // debug_symbol_table(map);
   // free_symbol_table(map);
 
