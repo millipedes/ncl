@@ -12,6 +12,8 @@
 #include "coordinate.h"
 #include "canvas/include/canvas.h"
 
+#define DEFAULT_LINE_THICKNESS 10
+
 typedef struct LINE_T {
   coord_2d to;
   coord_2d from;

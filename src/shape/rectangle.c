@@ -39,7 +39,7 @@ canvas draw_rectangle(canvas the_canvas, rectangle the_rect) {
 void debug_rectangle(rectangle the_rect) {
   printf("[RECTANGLE]: Height: %ld, Width: %ld, Thickness: %d, ",
       the_rect.height, the_rect.width, the_rect.thickness);
-  printf("Center: (%f, %f), ", the_rect.center.x, the_rect.center.y);
+  printf("Center: (%.2f, %.2f), ", the_rect.center.x, the_rect.center.y);
   debug_pixel(the_rect.color);
 }
 

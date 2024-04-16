@@ -25,6 +25,7 @@ const char * internal_node_type_to_string(internal_node_type int_node_type) {
     case IN_WIDTH_DECLARATION:      return "Width Decl";
     case IN_RECTANGLE_PARAMETERS:   return "Rectangle Params";
     case IN_ELLIPSE_PARAMETERS:     return "Ellipse Params";
+    case IN_LINE_PARAMETERS:        return "Line Params";
     case IN_MAJOR_AXIS_DECLARATION: return "Major Axis Decl";
     case IN_MINOR_AXIS_DECLARATION: return "Minor Axis Decl";
     case IN_THICKNESS_DECLARATION:  return "Thickness Decl";

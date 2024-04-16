@@ -18,9 +18,11 @@ typedef enum {
   NCL_BOOL,
   NCL_DOUBLE,
   NCL_INT,
+  NCL_POINT,
   NCL_COLOR,
   NCL_RECTANGLE,
   NCL_ELLIPSE,
+  NCL_LINE,
 } ncl_type;
 
 const char * ncl_type_to_string(ncl_type type);
@@ -30,9 +32,11 @@ typedef union {
   int the_bool;
   double the_double;
   int the_integer;
+  coord_2d the_point;
   pixel the_color;
   rectangle the_rectangle;
   ellipse the_ellipse;
+  line the_line;
 } symbol_value;
 
 typedef struct SYMBOL_T {
@@ -46,9 +50,11 @@ symbol_value to_string(const void * value);
 symbol_value to_bool(const void * value);
 symbol_value to_double(const void * value);
 symbol_value to_int(const void * value);
+symbol_value to_point(const void * value);
 symbol_value to_color(const void * value);
 symbol_value to_rectangle(const void * value);
 symbol_value to_ellipse(const void * value);
+symbol_value to_line(const void * value);
 
 // Operators
 symbol add_symbol(symbol s1, symbol s2);

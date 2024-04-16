@@ -12,6 +12,10 @@
 #include "canvas/include/canvas.h"
 #include "coordinate.h"
 
+#define DEFAULT_ELLIPSE_MAJOR_AXIS 15
+#define DEFAULT_ELLIPSE_MINOR_AXIS 15
+#define DEFAULT_ELLIPSE_THICKNESS  10
+
 typedef struct ELLIPSE_T {
   coord_2d center;
   pixel color;

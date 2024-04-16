@@ -35,7 +35,7 @@ const char * token_type_to_string(size_t category);
 %type <the_ast> shape_assignment rectangle_declaration shape point_declaration
 %type <the_ast> pick_NEWLINE_stmt ellipse_declaration line_declaration
 %type <the_ast> to_declaration from_declaration for_loop expression
-%type <the_ast> expression_assignment if_stmt
+%type <the_ast> expression_assignment if_stmt line_parameters line_parameter
 %type <the_ast> rectangle_parameter rectangle_parameters height_declaration
 %type <the_ast> width_declaration major_axis_declaration minor_axis_declaration
 %type <the_ast> ellipse_parameters ellipse_parameter thickness_declartaion
@@ -245,6 +245,9 @@ rectangle_declaration
     $$ = init_ast((token){0}, IN_RECTANGLE_DECLARATION);
     $$ = add_child($$, $3);
   }
+  | RECTANGLE LPAR RPAR {
+    $$ = init_ast((token){0}, IN_RECTANGLE_DECLARATION);
+  }
   ;
 
 rectangle_parameters
@@ -262,7 +265,6 @@ rectangle_parameter
   | height_declaration
   | width_declaration
   | thickness_declartaion
-  | NAME
   ;
 
 height_declaration
@@ -283,6 +285,9 @@ ellipse_declaration
   : ELLIPSE LPAR ellipse_parameters RPAR {
     $$ = init_ast((token){0}, IN_ELLIPSE_DECLARATION);
     $$ = add_child($$, $3);
+  }
+  | ELLIPSE LPAR RPAR {
+    $$ = init_ast((token){0}, IN_ELLIPSE_DECLARATION);
   }
   ;
 
@@ -333,11 +338,29 @@ point_declaration
   ;
 
 line_declaration
-  : LINE LPAR from_declaration COMMA to_declaration RPAR {
+  : LINE LPAR line_parameters RPAR {
     $$ = init_ast((token){0}, IN_LINE_DECLARATION);
     $$ = add_child($$, $3);
-    $$ = add_child($$, $5);
   }
+  | LINE LPAR RPAR {
+    $$ = init_ast((token){0}, IN_LINE_DECLARATION);
+  }
+  ;
+
+line_parameters
+  : line_parameters COMMA line_parameter {
+    $$ = init_ast((token){0}, IN_LINE_PARAMETERS);
+    $$ = add_child($$, $1);
+    $$ = add_child($$, $3);
+  }
+  | line_parameter
+  ;
+
+line_parameter
+  : color_declaration
+  | thickness_declartaion
+  | from_declaration
+  | to_declaration
   ;
 
 to_declaration

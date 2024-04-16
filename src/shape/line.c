@@ -16,8 +16,8 @@
  */
 void debug_line(line the_line) {
   printf("[LINE] Thickness: %d, ", the_line.thickness);
-  printf("From: (%f, %f), ", the_line.from.x, the_line.from.y);
-  printf("To: (%f, %f), ", the_line.to.x, the_line.to.y);
+  printf("From: (%.2f, %.2f), ", the_line.from.x, the_line.from.y);
+  printf("To: (%.2f, %.2f), ", the_line.to.x, the_line.to.y);
   debug_pixel(the_line.color);
 }
 

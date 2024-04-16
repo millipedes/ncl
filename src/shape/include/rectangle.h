@@ -11,6 +11,10 @@
 
 #include "line.h"
 
+#define DEFAULT_RECTANGLE_HEIGHT    15
+#define DEFAULT_RECTANGLE_WIDTH     15
+#define DEFAULT_RECTANGLE_THICKNESS 10
+
 typedef struct RECTANGLE_T {
   coord_2d center;
   pixel color;

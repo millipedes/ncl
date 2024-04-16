@@ -10,10 +10,13 @@ set(SRC_FILES
   ${SRC_DIR}/general/linked_list.c
   ${SRC_DIR}/language/ast.c
   ${SRC_DIR}/language/execute.c
+  ${SRC_DIR}/language/execute_expression.c
+  ${SRC_DIR}/language/execute_shape.c
   ${SRC_DIR}/language/internal_node_type.c
   ${SRC_DIR}/language/symbol.c
   ${SRC_DIR}/language/symbol_table.c
   ${SRC_DIR}/language/token.c
+  ${SRC_DIR}/shape/coordinate.c
   ${SRC_DIR}/shape/ellipse.c
   ${SRC_DIR}/shape/line.c
   ${SRC_DIR}/shape/rectangle.c

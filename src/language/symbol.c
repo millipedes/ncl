@@ -6,9 +6,11 @@ const char * ncl_type_to_string(ncl_type type) {
     case NCL_BOOL:      return "Bool";
     case NCL_DOUBLE:    return "Double";
     case NCL_INT:       return "Int";
+    case NCL_POINT:     return "Point";
     case NCL_COLOR:     return "Color";
     case NCL_RECTANGLE: return "Rectangle";
     case NCL_ELLIPSE:   return "Ellipse";
+    case NCL_LINE:      return "Line";
   }
   return NULL;
 }
@@ -29,6 +31,9 @@ symbol init_symbol(const void * value, ncl_type type) {
     case NCL_INT:
       the_symbol.value = to_int(value);
       break;
+    case NCL_POINT:
+      the_symbol.value = to_point(value);
+      break;
     case NCL_COLOR:
       the_symbol.value = to_color(value);
       break;
@@ -37,6 +42,9 @@ symbol init_symbol(const void * value, ncl_type type) {
       break;
     case NCL_ELLIPSE:
       the_symbol.value = to_ellipse(value);
+      break;
+    case NCL_LINE:
+      the_symbol.value = to_line(value);
       break;
   }
   return the_symbol;
@@ -75,6 +83,15 @@ symbol_value to_double(const void * value) {
 symbol_value to_int(const void * value) {
   symbol_value the_symbol_value = {0};
   the_symbol_value.the_integer = *(int *)value;
+  return the_symbol_value;
+}
+
+symbol_value to_point(const void * value) {
+  symbol_value the_symbol_value = {0};
+  const coord_2d color_value = *(const coord_2d *)value;
+  double x = color_value.x;
+  double y = color_value.y;
+  the_symbol_value.the_point = (coord_2d){x, y};
   return the_symbol_value;
 }
 
@@ -119,6 +136,22 @@ symbol_value to_ellipse(const void * value) {
     color,
     major_axis,
     minor_axis,
+    thickness
+  };
+  return the_symbol_value;
+}
+
+symbol_value to_line(const void * value) {
+  symbol_value the_symbol_value = {0};
+  const line line_value = *(const line *)value;
+  coord_2d to = (coord_2d){line_value.to.x, line_value.to.y};
+  coord_2d from = (coord_2d){line_value.from.x, line_value.from.y};
+  pixel color = (pixel){line_value.color.r, line_value.color.g, line_value.color.b};
+  size_t thickness = line_value.thickness;
+  the_symbol_value.the_line = (line){
+    to,
+    from,
+    color,
     thickness
   };
   return the_symbol_value;
@@ -308,10 +341,13 @@ void debug_symbol(symbol the_symbol) {
       printf("%s\n", the_symbol.value.the_bool ? "true" : "false");
       break;
     case NCL_DOUBLE:
-      printf("%f\n", the_symbol.value.the_double);
+      printf("%.2f\n", the_symbol.value.the_double);
       break;
     case NCL_INT:
       printf("%d\n", the_symbol.value.the_integer);
+      break;
+    case NCL_POINT:
+      debug_coord_2d(the_symbol.value.the_point);
       break;
     case NCL_COLOR:
       debug_pixel(the_symbol.value.the_color);
@@ -321,6 +357,9 @@ void debug_symbol(symbol the_symbol) {
       break;
     case NCL_ELLIPSE:
       debug_ellipse(the_symbol.value.the_ellipse);
+      break;
+    case NCL_LINE:
+      debug_line(the_symbol.value.the_line);
       break;
   }
 }
