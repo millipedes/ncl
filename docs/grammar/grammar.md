@@ -47,6 +47,18 @@ shape -> line_declaration
        | point_declaration
        | color_declaration
 
+
+line_declaration -> LINE LPAR line_parameters RPAR
+                  | LINE LPAR RPAR
+
+line_parameters -> line_parameters COMMA line_parameter
+                 | line_parameter
+
+line_parameter -> color_declaration
+                | thickness_declartaion
+                | from_declaration
+                | to_declaration
+
 ellipse_decoration -> ELLIPSE LPAR ellipse_parameters RPAR
                     | ELLIPSE LPAR RPAR
 
