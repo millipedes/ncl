@@ -49,7 +49,6 @@ void print_unmatched_quote(char * literal, int line_no);
 [ \t]
 
 #.*          { return allocate_ast(COMMENT); }
-"break"      { return allocate_ast(BREAK); }
 "color"      { return allocate_ast(COLOR); }
 "for"        { return allocate_ast(FOR); }
 "height"     { return allocate_ast(HEIGHT); }
@@ -75,36 +74,32 @@ void print_unmatched_quote(char * literal, int line_no);
 
 [A-Za-z_][A-Za-z0-9_]*  { return allocate_ast(NAME); }
 
-[0-9_]+                 |
-[0-9_]+(e|E)[-+]?[0-9]* { return allocate_ast(INTEGER); }
-
+[0-9_]+                         |
+[0-9_]+(e|E)[-+]?[0-9]*         |
 "."[0-9]+                       |
 "."[0-9]+(e|E)[-+]?[0-9]*       |
 [0-9]+"."[0-9]+                 |
-[0-9]+"."[0-9]+(e|E)[-+]?[0-9]* { return allocate_ast(DOUBLE); }
+[0-9]+"."[0-9]+(e|E)[-+]?[0-9]* { return allocate_ast(NUMBER); }
 
-"("  { return allocate_ast(LPAR); }
-")"  { return allocate_ast(RPAR); }
-"["  { return allocate_ast(LSQB); }
-"]"  { return allocate_ast(RSQB); }
-","  { return allocate_ast(COMMA); }
-"+"  { return allocate_ast(PLUS); }
-"-"  { return allocate_ast(MINUS); }
-"*"  { return allocate_ast(STAR); }
-"/"  { return allocate_ast(SLASH); }
-"|"  { return allocate_ast(VBAR); }
-"&"  { return allocate_ast(AMPER); }
-"<"  { return allocate_ast(LESS); }
-">"  { return allocate_ast(GREATER); }
-"="  { return allocate_ast(EQUAL); }
-"%"  { return allocate_ast(PERCENT); }
-"{"  { return allocate_ast(LBRACE); }
-"}"  { return allocate_ast(RBRACE); }
-"==" { return allocate_ast(EQEQUAL); }
-"!=" { return allocate_ast(NOTEQUAL); }
-"<=" { return allocate_ast(LESSEQUAL); }
-">=" { return allocate_ast(GREATEREQUAL); }
-"//" { return allocate_ast(DOUBLESLASH); }
+"("   { return allocate_ast(LPAR); }
+")"   { return allocate_ast(RPAR); }
+","   { return allocate_ast(COMMA); }
+"+"   { return allocate_ast(PLUS); }
+"-"   { return allocate_ast(MINUS); }
+"*"   { return allocate_ast(STAR); }
+"/"   { return allocate_ast(SLASH); }
+"||"  { return allocate_ast(LOR); }
+"&&"  { return allocate_ast(LAND); }
+"<"   { return allocate_ast(LESS); }
+">"   { return allocate_ast(GREATER); }
+"="   { return allocate_ast(EQUAL); }
+"%"   { return allocate_ast(PERCENT); }
+"{"   { return allocate_ast(LBRACE); }
+"}"   { return allocate_ast(RBRACE); }
+"=="  { return allocate_ast(EQEQUAL); }
+"!="  { return allocate_ast(NOTEQUAL); }
+"<="  { return allocate_ast(LESSEQUAL); }
+">="  { return allocate_ast(GREATEREQUAL); }
 %%
 
 int allocate_ast(size_t category) {

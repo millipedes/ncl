@@ -16,8 +16,7 @@
 typedef enum {
   NCL_STRING = 1,
   NCL_BOOL,
-  NCL_DOUBLE,
-  NCL_INT,
+  NCL_NUMBER,
   NCL_POINT,
   NCL_COLOR,
   NCL_RECTANGLE,
@@ -30,8 +29,7 @@ const char * ncl_type_to_string(ncl_type type);
 typedef union {
   char * the_string;
   int the_bool;
-  double the_double;
-  int the_integer;
+  double the_number;
   coord_2d the_point;
   pixel the_color;
   rectangle the_rectangle;
@@ -48,8 +46,7 @@ typedef struct SYMBOL_T {
 symbol init_symbol(const void * value, ncl_type type);
 symbol_value to_string(const void * value);
 symbol_value to_bool(const void * value);
-symbol_value to_double(const void * value);
-symbol_value to_int(const void * value);
+symbol_value to_number(const void * value);
 symbol_value to_point(const void * value);
 symbol_value to_color(const void * value);
 symbol_value to_rectangle(const void * value);
@@ -66,9 +63,15 @@ symbol less_symbol(symbol s1, symbol s2);
 symbol great_symbol(symbol s1, symbol s2);
 symbol less_equal_symbol(symbol s1, symbol s2);
 symbol great_equal_symbol(symbol s1, symbol s2);
+symbol eq_equal_symbol(symbol s1, symbol s2);
+symbol land_symbol(symbol s1, symbol s2);
+symbol lor_symbol(symbol s1, symbol s2);
 
 void assert_symbol_type_compatability(symbol s1, symbol s2);
 void debug_symbol(symbol the_symbol);
+int symbol_true(symbol the_symbol);
+int symbol_bound(symbol the_symbol);
+void write_shape_symbol_to_canvas(symbol shape, canvas * the_canvas);
 void free_symbol(symbol the_symbol);
 
 #endif

@@ -1,23 +1,29 @@
-canvas(height(10), width(1000)) {
-  a = -1
-  a = 2 + 3 - 15
-  a = 2.0 + 3.0 - 15.0
-  b = color(1, 3, 2)
-  c = point(2.0, 3.0)
-  d = rectangle(point(3.0 + 10.0, 19.0 - 10.0), \
-                height(4),                      \
-                width(5),                       \
-                color(0, 23, 42),               \
-                thickness(42)                   \
-               )
-  e = rectangle()
-  f = ellipse(point(3.0 + 10.0, 19.0 - 10.0),   \
-                major_axis(4),                  \
-                minor_axis(5),                  \
-                color(0, 23, 42),               \
-                thickness(42)                   \
-               )
-  g = ellipse()
-  h = line(to(rectangle(point(3.0 + 10.0, 19.0 - 10.0), height(4), width(5), color(0, 23, 42), thickness(42))), from(ellipse()), thickness(19), color(0, 23, 42))
-  i = line()
+canvas(height(1080), width(1920), color(0, 0, 0)) {
+  for i in range(24) {
+    for j in range(15) {
+      p = point(40.0 * i + 40.0, 40.0 * j + 40.0)
+      rect = rectangle(point(80.0 * i + 40.0, 80.0 * j + 40.0),    \
+                       color(j * (255 / 12), 255, i * (255 / 12)), \
+                       height(50.0),                               \
+                       width(50.0),                                \
+                       thickness(5.0)                              \
+                      )
+      ellip = ellipse(point(80.0 * i + 40.0, 80.0 * j + 40.0),    \
+                      color(j * (255 / 12), 255, i * (255 / 12)), \
+                      minor_axis(50.0),                           \
+                      major_axis(50.0),                           \
+                      thickness(5.0)                              \
+                     )
+      l = line(from(rect), to(p), color(0, 35, 66), thickness(5))
+      pivot = 10.0
+      if((i > pivot) || (i < 2)) {
+        write(ellip)
+      }
+      if(i < pivot) {
+        if(j >= pivot) {
+          write(rect)
+        }
+      }
+    }
+  }
 }

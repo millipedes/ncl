@@ -13,6 +13,18 @@ pick_NEWLINE_stmt -> statement
 
 statement -> expression_assignement
            | shape_assignment
+           | if_stmt
+           | for_loop
+           | write_declaration
+
+write_declaration -> WRITE LPAR NAME RPAR
+                   | WRITE LPAR shape RPAR
+
+for_loop -> FOR NAME IN RANGE LPAR expression RPAR LBRACE star_NEWLINE_stmt RBRACE
+          | FOR NAME IN RANGE LPAR expression COMMA expression RPAR LBRACE star_NEWLINE_stmt RBRACE
+
+
+if_stmt -> IF LPAR expression RPAR LBRACE star_NEWLINE_stmt RBRACE
 
 expression_assignement -> NAME EQUAL expression
 
@@ -46,7 +58,7 @@ shape -> line_declaration
        | rectangle_delcaration
        | point_declaration
        | color_declaration
-
+       | NAME
 
 line_declaration -> LINE LPAR line_parameters RPAR
                   | LINE LPAR RPAR
@@ -95,6 +107,10 @@ width_declaration -> WIDTH LPAR expression RPAR
 height_declaration -> HEIGHT LPAR expression RPAR
 thickness_declaration -> THICKNESS LPAR expression RPAR
 
+IN           -> in
+RANGE        -> range
+FOR          -> for
+IF           -> if
 CANVAS       -> canvas
 ELLIPSE      -> ellipse
 RECTANGLE    -> rectangle

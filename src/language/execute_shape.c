@@ -40,6 +40,13 @@ symbol execute_shape(ast head, symbol_table * st) {
       return execute_point_declaration(head, st);
     case IN_COLOR_DECLARATION:
       return execute_color_declaration(head, st);
+    case NAME:
+      symbol return_symbol = find_symbol(*st, head.the_token.literal);
+      if(return_symbol.type)
+        return return_symbol;
+      fprintf(stderr, "[EXECUTE_EXPRESSION]: Unknown Variable: `%s`, Exiting\n",
+          head.the_token.literal);
+      exit(1);
   }
   return (symbol){0};
 }
@@ -145,10 +152,8 @@ void execute_rectangle_parameters(ast head, symbol_table * st, rectangle * param
 size_t size_t_from_symbol(symbol the_symbol, const char * where,
     const char * what) {
   switch(the_symbol.type) {
-    case NCL_INT:
-      return (size_t)the_symbol.value.the_integer;
-    case NCL_DOUBLE:
-      return (size_t)the_symbol.value.the_double;
+    case NCL_NUMBER:
+      return (size_t)the_symbol.value.the_number;
     default:
       fprintf(stderr, "[%s]: Unsupported `%s` type\n", where, what);
       exit(1);
@@ -157,8 +162,8 @@ size_t size_t_from_symbol(symbol the_symbol, const char * where,
 
 symbol execute_point_declaration(ast head, symbol_table * st) {
   return init_symbol(&((coord_2d){
-    execute_expression(head.children[0], st).value.the_double,
-    execute_expression(head.children[1], st).value.the_double
+    execute_expression(head.children[0], st).value.the_number,
+    execute_expression(head.children[1], st).value.the_number
   }), NCL_POINT);
 }
 
@@ -166,10 +171,10 @@ symbol execute_color_declaration(ast head, symbol_table * st) {
   symbol r = execute_expression(head.children[0], st);
   symbol g = execute_expression(head.children[1], st);
   symbol b = execute_expression(head.children[2], st);
-  if(r.type == NCL_INT && g.type == NCL_INT && b.type == NCL_INT) {
-    pixel the_color = (pixel){r.value.the_integer,
-                              g.value.the_integer,
-                              b.value.the_integer};
+  if(r.type == NCL_NUMBER && g.type == NCL_NUMBER && b.type == NCL_NUMBER) {
+    pixel the_color = (pixel){r.value.the_number,
+                              g.value.the_number,
+                              b.value.the_number};
     return init_symbol(&the_color, NCL_COLOR);
   } else {
     fprintf(stderr, "[EXECUTE_COLOR_DECLARATION]: Only int type is supported "

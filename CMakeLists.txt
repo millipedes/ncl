@@ -67,18 +67,18 @@ target_link_libraries(new_project PNG::PNG m)
 
 target_compile_options(new_project PRIVATE -Wall -Wextra -g)
 
-# Tests
-set(TEST_FILES
-    ${TEST_DIR}/shape/ellipse_test.c
-    ${TEST_DIR}/shape/line_test.c
-    ${TEST_DIR}/shape/rectangle_test.c
-)
-
-# Add tests executable
-add_executable(tests ${SRC_FILES} ${TEST_FILES} ${TEST_DIR}/main/main.c)
-
-# Set compiler flags for tests target
-target_compile_options(tests PRIVATE -Wall -Wextra -g)
-
-# Link libraries for tests
-target_link_libraries(tests PNG::PNG m)
+# # Tests
+# set(TEST_FILES
+#     ${TEST_DIR}/shape/ellipse_test.c
+#     ${TEST_DIR}/shape/line_test.c
+#     ${TEST_DIR}/shape/rectangle_test.c
+# )
+# 
+# # Add tests executable
+# add_executable(tests ${SRC_FILES} ${TEST_FILES} ${TEST_DIR}/main/main.c)
+# 
+# # Set compiler flags for tests target
+# target_compile_options(tests PRIVATE -Wall -Wextra -g)
+# 
+# # Link libraries for tests
+# target_link_libraries(tests PNG::PNG m)

@@ -13,7 +13,7 @@ const char * token_type_to_string(size_t category);
 
 %left PLUS MINUS
 %left STAR SLASH PERCENT
-%left LESS GREATER LESSEQUAL GREATEREQUAL
+%left LESS GREATER LESSEQUAL GREATEREQUAL EQEQUAL LAND LOR
 
 %code requires {
   #include "language/include/ast.h"
@@ -23,12 +23,12 @@ const char * token_type_to_string(size_t category);
   ast the_ast;
 }
 
-%token <the_ast> STRING ENDMARKER NEWLINE COMMENT FALSE TRUE BREAK FOR CANVAS
+%token <the_ast> STRING ENDMARKER NEWLINE COMMENT FALSE TRUE FOR CANVAS
 %token <the_ast> COLOR RECTANGLE CIRCLE ELLIPSE SQUARE LINE TO FROM POINT RANGE
-%token <the_ast> APPEND NORTH EAST SOUTH WEST WRITE NAME INTEGER DOUBLE LPAR
-%token <the_ast> RPAR LSQB RSQB COMMA PLUS MINUS STAR SLASH VBAR AMPER LESS
+%token <the_ast> APPEND NORTH EAST SOUTH WEST WRITE NAME NUMBER LPAR
+%token <the_ast> RPAR COMMA PLUS MINUS STAR SLASH LAND LOR LESS
 %token <the_ast> GREATER EQUAL PERCENT LBRACE RBRACE EQEQUAL NOTEQUAL LESSEQUAL
-%token <the_ast> GREATEREQUAL DOUBLESLASH IN IF HEIGHT WIDTH MAJOR_AXIS
+%token <the_ast> GREATEREQUAL IN IF HEIGHT WIDTH MAJOR_AXIS
 %token <the_ast> MINOR_AXIS THICKNESS
 
 %type <the_ast> canvas_declaration color_declaration star_NEWLINE_stmt statement
@@ -124,6 +124,10 @@ write_declaration
     $$ = init_ast((token){0}, IN_WRITE);
     $$ = add_child($$, $3);
   }
+  | WRITE LPAR shape RPAR {
+    $$ = init_ast((token){0}, IN_WRITE);
+    $$ = add_child($$, $3);
+  }
   ;
 
 for_loop
@@ -152,8 +156,7 @@ expression_assignment
   ;
 
 expression
-  : DOUBLE
-  | INTEGER
+  : NUMBER
   | NAME
   | STRING
   | TRUE
@@ -207,6 +210,24 @@ expression
     $$ = add_child($$, $3);
   }
   | expression GREATEREQUAL expression {
+    $$ = init_ast((token){0}, IN_EXPRESSION);
+    $$ = add_child($$, $1);
+    $$ = add_child($$, $2);
+    $$ = add_child($$, $3);
+  }
+  | expression EQEQUAL expression {
+    $$ = init_ast((token){0}, IN_EXPRESSION);
+    $$ = add_child($$, $1);
+    $$ = add_child($$, $2);
+    $$ = add_child($$, $3);
+  }
+  | expression LAND expression {
+    $$ = init_ast((token){0}, IN_EXPRESSION);
+    $$ = add_child($$, $1);
+    $$ = add_child($$, $2);
+    $$ = add_child($$, $3);
+  }
+  | expression LOR expression {
     $$ = init_ast((token){0}, IN_EXPRESSION);
     $$ = add_child($$, $1);
     $$ = add_child($$, $2);
@@ -400,7 +421,6 @@ const char * token_type_to_string(size_t category) {
     case COMMENT:       return "comment";
     case FALSE:         return "false";
     case TRUE:          return "true";
-    case BREAK:         return "break";
     case FOR:           return "for";
     case CANVAS:        return "canvas";
     case COLOR:         return "color";
@@ -420,19 +440,15 @@ const char * token_type_to_string(size_t category) {
     case WEST:          return "west";
     case WRITE:         return "write";
     case NAME:          return "name";
-    case INTEGER:       return "integer";
-    case DOUBLE:        return "double";
     case LPAR:          return "lpar";
     case RPAR:          return "rpar";
-    case LSQB:          return "lsqb";
-    case RSQB:          return "rsqb";
     case COMMA:         return "comma";
     case PLUS:          return "plus";
     case MINUS:         return "minus";
     case STAR:          return "star";
     case SLASH:         return "slash";
-    case VBAR:          return "vbar";
-    case AMPER:         return "amper";
+    case LOR:           return "l-or";
+    case LAND:          return "l-and";
     case LESS:          return "less";
     case GREATER:       return "greater";
     case EQUAL:         return "equal";
@@ -443,7 +459,6 @@ const char * token_type_to_string(size_t category) {
     case NOTEQUAL:      return "notequal";
     case LESSEQUAL:     return "lessequal";
     case GREATEREQUAL:  return "greaterequal";
-    case DOUBLESLASH:   return "doubleslash";
   }
   return NULL;
 }

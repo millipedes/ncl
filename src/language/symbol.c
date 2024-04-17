@@ -4,8 +4,7 @@ const char * ncl_type_to_string(ncl_type type) {
   switch(type) {
     case NCL_STRING:    return "String";
     case NCL_BOOL:      return "Bool";
-    case NCL_DOUBLE:    return "Double";
-    case NCL_INT:       return "Int";
+    case NCL_NUMBER:    return "Number";
     case NCL_POINT:     return "Point";
     case NCL_COLOR:     return "Color";
     case NCL_RECTANGLE: return "Rectangle";
@@ -25,11 +24,8 @@ symbol init_symbol(const void * value, ncl_type type) {
     case NCL_BOOL:
       the_symbol.value = to_bool(value);
       break;
-    case NCL_DOUBLE:
-      the_symbol.value = to_double(value);
-      break;
-    case NCL_INT:
-      the_symbol.value = to_int(value);
+    case NCL_NUMBER:
+      the_symbol.value = to_number(value);
       break;
     case NCL_POINT:
       the_symbol.value = to_point(value);
@@ -74,15 +70,9 @@ symbol_value to_bool(const void * value) {
   }
 }
 
-symbol_value to_double(const void * value) {
+symbol_value to_number(const void * value) {
   symbol_value the_symbol_value = {0};
-  the_symbol_value.the_double = *(double *)value;
-  return the_symbol_value;
-}
-
-symbol_value to_int(const void * value) {
-  symbol_value the_symbol_value = {0};
-  the_symbol_value.the_integer = *(int *)value;
+  the_symbol_value.the_number = *(double *)value;
   return the_symbol_value;
 }
 
@@ -170,13 +160,9 @@ symbol add_symbol(symbol s1, symbol s2) {
       strncat(concat_string.value.the_string, s1.value.the_string, s1_len);
       strncat(concat_string.value.the_string + s1_len, s2.value.the_string, s2_len + 1);
       break;
-    case NCL_DOUBLE:
-      ret.type = NCL_DOUBLE;
-      ret.value.the_double = s1.value.the_double + s2.value.the_double;
-      break;
-    case NCL_INT:
-      ret.type = NCL_INT;
-      ret.value.the_integer = s1.value.the_integer + s2.value.the_integer;
+    case NCL_NUMBER:
+      ret.type = NCL_NUMBER;
+      ret.value.the_number = s1.value.the_number + s2.value.the_number;
       break;
     default:
       OPERATOR_NOT_SUPPORTED(ADD_SYMBOL, Addition)
@@ -188,13 +174,9 @@ symbol sub_symbol(symbol s1, symbol s2) {
   symbol ret = {0};
   assert_symbol_type_compatability(s1, s2);
   switch(s1.type) {
-    case NCL_DOUBLE:
-      ret.type = NCL_DOUBLE;
-      ret.value.the_double = s1.value.the_double - s2.value.the_double;
-      break;
-    case NCL_INT:
-      ret.type = NCL_INT;
-      ret.value.the_integer = s1.value.the_integer - s2.value.the_integer;
+    case NCL_NUMBER:
+      ret.type = NCL_NUMBER;
+      ret.value.the_number = s1.value.the_number - s2.value.the_number;
       break;
     default:
       OPERATOR_NOT_SUPPORTED(SUB_SYMBOL, Subtraction)
@@ -206,13 +188,9 @@ symbol mult_symbol(symbol s1, symbol s2) {
   symbol ret = {0};
   assert_symbol_type_compatability(s1, s2);
   switch(s1.type) {
-    case NCL_DOUBLE:
-      ret.type = NCL_DOUBLE;
-      ret.value.the_double = s1.value.the_double * s2.value.the_double;
-      break;
-    case NCL_INT:
-      ret.type = NCL_INT;
-      ret.value.the_integer = s1.value.the_integer * s2.value.the_integer;
+    case NCL_NUMBER:
+      ret.type = NCL_NUMBER;
+      ret.value.the_number = s1.value.the_number * s2.value.the_number;
       break;
     default:
       OPERATOR_NOT_SUPPORTED(MULT_SYMBOL, Multiplication)
@@ -224,13 +202,9 @@ symbol div_symbol(symbol s1, symbol s2) {
   symbol ret = {0};
   assert_symbol_type_compatability(s1, s2);
   switch(s1.type) {
-    case NCL_DOUBLE:
-      ret.type = NCL_DOUBLE;
-      ret.value.the_double = s1.value.the_double / s2.value.the_double;
-      break;
-    case NCL_INT:
-      ret.type = NCL_INT;
-      ret.value.the_integer = s1.value.the_integer / s2.value.the_integer;
+    case NCL_NUMBER:
+      ret.type = NCL_NUMBER;
+      ret.value.the_number = s1.value.the_number / s2.value.the_number;
       break;
     default:
       OPERATOR_NOT_SUPPORTED(DIV_SYMBOL, Division)
@@ -242,9 +216,9 @@ symbol mod_symbol(symbol s1, symbol s2) {
   symbol ret = {0};
   assert_symbol_type_compatability(s1, s2);
   switch(s1.type) {
-    case NCL_INT:
-      ret.type = NCL_INT;
-      ret.value.the_integer = s1.value.the_integer % s2.value.the_integer;
+    case NCL_NUMBER:
+      ret.type = NCL_NUMBER;
+      ret.value.the_number = (int)s1.value.the_number % (int)s2.value.the_number;
       break;
     default:
       OPERATOR_NOT_SUPPORTED(MOD_SYMBOL, Modulus)
@@ -256,13 +230,9 @@ symbol less_symbol(symbol s1, symbol s2) {
   symbol ret = {0};
   assert_symbol_type_compatability(s1, s2);
   switch(s1.type) {
-    case NCL_DOUBLE:
-      ret.type = NCL_DOUBLE;
-      ret.value.the_double = s1.value.the_double < s2.value.the_double;
-      break;
-    case NCL_INT:
-      ret.type = NCL_INT;
-      ret.value.the_integer = s1.value.the_integer < s2.value.the_integer;
+    case NCL_NUMBER:
+      ret.type = NCL_BOOL;
+      ret.value.the_bool = s1.value.the_number < s2.value.the_number;
       break;
     default:
       OPERATOR_NOT_SUPPORTED(LESS_SYMBOL, Less than)
@@ -274,13 +244,9 @@ symbol great_symbol(symbol s1, symbol s2) {
   symbol ret = {0};
   assert_symbol_type_compatability(s1, s2);
   switch(s1.type) {
-    case NCL_DOUBLE:
-      ret.type = NCL_DOUBLE;
-      ret.value.the_double = s1.value.the_double > s2.value.the_double;
-      break;
-    case NCL_INT:
-      ret.type = NCL_INT;
-      ret.value.the_integer = s1.value.the_integer > s2.value.the_integer;
+    case NCL_NUMBER:
+      ret.type = NCL_BOOL;
+      ret.value.the_bool = s1.value.the_number > s2.value.the_number;
       break;
     default:
       OPERATOR_NOT_SUPPORTED(GREAT_SYMBOL, Greater than)
@@ -292,13 +258,9 @@ symbol less_equal_symbol(symbol s1, symbol s2) {
   symbol ret = {0};
   assert_symbol_type_compatability(s1, s2);
   switch(s1.type) {
-    case NCL_DOUBLE:
-      ret.type = NCL_DOUBLE;
-      ret.value.the_double = s1.value.the_double <= s2.value.the_double;
-      break;
-    case NCL_INT:
-      ret.type = NCL_INT;
-      ret.value.the_integer = s1.value.the_integer <= s2.value.the_integer;
+    case NCL_NUMBER:
+      ret.type = NCL_BOOL;
+      ret.value.the_bool = s1.value.the_number <= s2.value.the_number;
       break;
     default:
       OPERATOR_NOT_SUPPORTED(LESS_EQUAL_SYMBOL, Less or equal to)
@@ -310,16 +272,62 @@ symbol great_equal_symbol(symbol s1, symbol s2) {
   symbol ret = {0};
   assert_symbol_type_compatability(s1, s2);
   switch(s1.type) {
-    case NCL_DOUBLE:
-      ret.type = NCL_DOUBLE;
-      ret.value.the_double = s1.value.the_double >= s2.value.the_double;
-      break;
-    case NCL_INT:
-      ret.type = NCL_INT;
-      ret.value.the_integer = s1.value.the_integer >= s2.value.the_integer;
+    case NCL_NUMBER:
+      ret.type = NCL_BOOL;
+      ret.value.the_bool = s1.value.the_number >= s2.value.the_number;
       break;
     default:
       OPERATOR_NOT_SUPPORTED(GREAT_EQUAL_SYMBOL, Greater or equal to)
+  }
+  return ret;
+}
+
+symbol eq_equal_symbol(symbol s1, symbol s2) {
+  symbol ret = {0};
+  assert_symbol_type_compatability(s1, s2);
+  switch(s1.type) {
+    case NCL_NUMBER:
+      ret.type = NCL_BOOL;
+      ret.value.the_bool = fabs(s1.value.the_number - s2.value.the_number) <= 0.00001;
+      break;
+    default:
+      OPERATOR_NOT_SUPPORTED(EQEQUAL_SYMBOL, Equal to)
+  }
+  return ret;
+}
+
+symbol land_symbol(symbol s1, symbol s2) {
+  symbol ret = {0};
+  assert_symbol_type_compatability(s1, s2);
+  switch(s1.type) {
+    case NCL_NUMBER:
+      ret.type = NCL_BOOL;
+      ret.value.the_bool = s1.value.the_number && s2.value.the_number;
+      break;
+    case NCL_BOOL:
+      ret.type = NCL_BOOL;
+      ret.value.the_bool = s1.value.the_bool && s2.value.the_bool;
+      break;
+    default:
+      OPERATOR_NOT_SUPPORTED(LAND_SYMBOL, Logical And)
+  }
+  return ret;
+}
+
+symbol lor_symbol(symbol s1, symbol s2) {
+  symbol ret = {0};
+  assert_symbol_type_compatability(s1, s2);
+  switch(s1.type) {
+    case NCL_NUMBER:
+      ret.type = NCL_BOOL;
+      ret.value.the_bool = s1.value.the_number || s2.value.the_number;
+      break;
+    case NCL_BOOL:
+      ret.type = NCL_BOOL;
+      ret.value.the_bool = s1.value.the_bool || s2.value.the_bool;
+      break;
+    default:
+      OPERATOR_NOT_SUPPORTED(GREAT_EQUAL_SYMBOL, Logical Or)
   }
   return ret;
 }
@@ -340,11 +348,8 @@ void debug_symbol(symbol the_symbol) {
     case NCL_BOOL:
       printf("%s\n", the_symbol.value.the_bool ? "true" : "false");
       break;
-    case NCL_DOUBLE:
-      printf("%.2f\n", the_symbol.value.the_double);
-      break;
-    case NCL_INT:
-      printf("%d\n", the_symbol.value.the_integer);
+    case NCL_NUMBER:
+      printf("%.2f\n", the_symbol.value.the_number);
       break;
     case NCL_POINT:
       debug_coord_2d(the_symbol.value.the_point);
@@ -361,6 +366,48 @@ void debug_symbol(symbol the_symbol) {
     case NCL_LINE:
       debug_line(the_symbol.value.the_line);
       break;
+  }
+}
+
+int symbol_true(symbol the_symbol) {
+  switch(the_symbol.type) {
+    case NCL_BOOL:
+      return the_symbol.value.the_bool;
+    case NCL_NUMBER:
+      return the_symbol.value.the_number;
+    default:
+      fprintf(stderr, "[SYMBOL_TRUE]: Unable to determine truth value of type"
+          "`%s`, Exiting\n", ncl_type_to_string(the_symbol.type));
+      exit(1);
+  }
+}
+
+int symbol_bound(symbol the_symbol) {
+  switch(the_symbol.type) {
+    case NCL_NUMBER:
+      return the_symbol.value.the_number;
+    default:
+      fprintf(stderr, "[SYMBOL_BOUND]: Unable to determine bound value of type"
+          "`%s`, Exiting\n", ncl_type_to_string(the_symbol.type));
+      exit(1);
+  }
+}
+
+void write_shape_symbol_to_canvas(symbol shape, canvas * the_canvas) {
+  switch(shape.type) {
+    case NCL_RECTANGLE:
+      *the_canvas = draw_rectangle(*the_canvas, shape.value.the_rectangle);
+      break;
+    case NCL_ELLIPSE:
+      *the_canvas = draw_ellipse(*the_canvas, shape.value.the_ellipse);
+      break;
+    case NCL_LINE:
+      *the_canvas = bresenham_line_draw(*the_canvas, shape.value.the_line);
+      break;
+    default:
+      fprintf(stderr, "[WRITE_SHAPE_SYMBOL_TO_CANVAS]: Unable to wrte value of "
+          "type `%s` to canvas, Exiting\n", ncl_type_to_string(shape.type));
+      exit(1);
   }
 }
 

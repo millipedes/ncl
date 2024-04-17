@@ -50,7 +50,9 @@ canvas bresenham_line_draw(canvas the_canvas, line the_line) {
       for(int i = 0; i < the_line.thickness; i++) {
         for(int j = -the_line.thickness / 2; j <= the_line.thickness / 2;
             j++) {
-          the_canvas.values[y + j][(int)x + i] = the_line.color;
+          if(y + j < the_canvas.height && y + j >= 0
+              && (int)x + i < the_canvas.width && (int)x + i >=0)
+            the_canvas.values[y + j][(int)x + i] = the_line.color;
         }
       }
       x += x_inc;
@@ -65,7 +67,9 @@ canvas bresenham_line_draw(canvas the_canvas, line the_line) {
       for(int i = 0; i < the_line.thickness; i++) {
         for(int j = -the_line.thickness / 2; j <= the_line.thickness / 2;
             j++) {
-          the_canvas.values[y + j][(int)x + i] = the_line.color;
+          if(y + j < the_canvas.height && y + j >= 0
+              && (int)x + i < the_canvas.width && (int)x + i >=0)
+            the_canvas.values[y + j][(int)x + i] = the_line.color;
         }
       }
       y += y_inc;

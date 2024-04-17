@@ -9,6 +9,8 @@ symbol execute_expression(ast head, symbol_table * st) {
   symbol return_symbol = {0};
   if(!head.children)
     return execute_symbol(head, st);
+  if(head.children[0].category == IN_EXPRESSION && head.qty_children == 1)
+    return execute_expression(head.children[0], st);
   switch(head.children[1].the_token.type) {
     case PLUS:
       return add_symbol(execute_expression(head.children[0], st),
@@ -16,13 +18,9 @@ symbol execute_expression(ast head, symbol_table * st) {
     case MINUS:
       return sub_symbol(execute_expression(head.children[0], st),
           execute_expression(head.children[2], st));
-    case INTEGER: // This is for unary minus
-      return_symbol.type = NCL_INT;
-      return_symbol.value.the_integer = -atoi(head.children[1].the_token.literal);
-      break;
-    case DOUBLE:  // This is for unary minus
-      return_symbol.type = NCL_DOUBLE;
-      return_symbol.value.the_integer = -atof(head.children[1].the_token.literal);
+    case NUMBER:  // This is for unary minus
+      return_symbol.type = NCL_NUMBER;
+      return_symbol.value.the_number = -atof(head.children[1].the_token.literal);
       break;
     case STAR:
       return mult_symbol(execute_expression(head.children[0], st),
@@ -45,6 +43,15 @@ symbol execute_expression(ast head, symbol_table * st) {
     case GREATEREQUAL:
       return great_equal_symbol(execute_expression(head.children[0], st),
           execute_expression(head.children[2], st));
+    case EQEQUAL:
+      return eq_equal_symbol(execute_expression(head.children[0], st),
+          execute_expression(head.children[2], st));
+    case LAND:
+      return land_symbol(execute_expression(head.children[0], st),
+          execute_expression(head.children[2], st));
+    case LOR:
+      return lor_symbol(execute_expression(head.children[0], st),
+          execute_expression(head.children[2], st));
   }
   return return_symbol;
 }
@@ -63,19 +70,15 @@ symbol execute_symbol(ast head, symbol_table * st) {
     return_symbol.type = NCL_BOOL;
     return_symbol.value.the_bool = 1;
     break;
-  case DOUBLE:
-    return_symbol.type = NCL_DOUBLE;
-    return_symbol.value.the_double = atof(head.the_token.literal);
-    break;
-  case INTEGER:
-    return_symbol.type = NCL_INT;
-    return_symbol.value.the_integer = atoi(head.the_token.literal);
+  case NUMBER:
+    return_symbol.type = NCL_NUMBER;
+    return_symbol.value.the_number = atof(head.the_token.literal);
     break;
   case NAME:
     return_symbol = find_symbol(*st, head.the_token.literal);
     if(return_symbol.type)
       return return_symbol;
-    fprintf(stderr, "[EXECUTE_EXPRESSION]: Unknown Variable: `%s`, Exiting\n",
+    fprintf(stderr, "[EXECUTE_SYMBOL]: Unknown Variable: `%s`, Exiting\n",
         head.the_token.literal);
     exit(1);
   }

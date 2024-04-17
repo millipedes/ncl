@@ -86,14 +86,22 @@ canvas draw_ellipse_points(canvas the_canvas, ellipse the_ellipse, int center_x,
     int center_y, int x, int y) {
   for(int i = -the_ellipse.thickness/2; i <= the_ellipse.thickness/2; i++) {
     for(int j = -the_ellipse.thickness/2; j <= the_ellipse.thickness/2; j++) {
-      the_canvas.values[center_y + y + i][center_x + x + j]
-        = the_ellipse.color;
-      the_canvas.values[center_y + y + i][center_x - x + j]
-        = the_ellipse.color;
-      the_canvas.values[center_y - y + i][center_x + x + j]
-        = the_ellipse.color;
-      the_canvas.values[center_y - y + i][center_x - x + j]
-        = the_ellipse.color;
+      if(center_y + y + i < the_canvas.height && center_y + y + i >= 0
+          && center_x + x + j < the_canvas.width && center_x + x + j >= 0) {
+        the_canvas.values[center_y + y + i][center_x + x + j] = the_ellipse.color;
+      }
+      if(center_y + y + i < the_canvas.height && center_y + y + i >= 0
+          && center_x - x + j < the_canvas.width && center_x - x + j >= 0) {
+        the_canvas.values[center_y + y + i][center_x - x + j] = the_ellipse.color;
+      }
+      if(center_y - y + i < the_canvas.height && center_y - y + i >= 0
+          && center_x + x + j < the_canvas.width && center_x + x + j >= 0) {
+        the_canvas.values[center_y - y + i][center_x + x + j] = the_ellipse.color;
+      }
+      if(center_y - y + i < the_canvas.height && center_y - y + i >= 0
+          && center_x - x + j < the_canvas.width && center_x - x + j >= 0) {
+        the_canvas.values[center_y - y + i][center_x - x + j] = the_ellipse.color;
+      }
     }
   }
   return the_canvas;
