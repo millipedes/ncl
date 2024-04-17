@@ -11,9 +11,10 @@ const char * token_type_to_string(size_t category);
 
 %debug
 
+%left LAND LOR
+%left LESS GREATER LESSEQUAL GREATEREQUAL EQEQUAL
 %left PLUS MINUS
 %left STAR SLASH PERCENT
-%left LESS GREATER LESSEQUAL GREATEREQUAL EQEQUAL LAND LOR
 
 %code requires {
   #include "language/include/ast.h"
