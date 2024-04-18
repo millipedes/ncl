@@ -7,10 +7,12 @@
 #include "shape/include/rectangle.h"
 
 #define MAX_SYMBOL_BYTES 1024
+#define MAX_QTY_DIGITS 8
+#define MAX_STRING_LEN 24
 
-#define OPERATOR_NOT_SUPPORTED(where, op)                          \
-  fprintf(stderr, "[##where##]: ##op## operator not supported"     \
-      " for type: `%s`, Exiting.\n", ncl_type_to_string(s1.type)); \
+#define OPERATOR_NOT_SUPPORTED(where, op)                                      \
+  fprintf(stderr, "[%s]: %s operator not supported for type: `%s`, Exiting.\n",\
+      where, op, ncl_type_to_string(s1.type));                                 \
   exit(1);
 
 typedef enum {
@@ -27,7 +29,7 @@ typedef enum {
 const char * ncl_type_to_string(ncl_type type);
 
 typedef union {
-  char * the_string;
+  char the_string[MAX_STRING_LEN];
   int the_bool;
   double the_number;
   coord_2d the_point;
@@ -67,11 +69,13 @@ symbol eq_equal_symbol(symbol s1, symbol s2);
 symbol land_symbol(symbol s1, symbol s2);
 symbol lor_symbol(symbol s1, symbol s2);
 
+void concat_string(const char * s1, const char * s2, char * ret);
+void assert_add_symbol_type_compatability(symbol s1, symbol s2);
+int number_and_string(symbol s1, symbol s2);
 void assert_symbol_type_compatability(symbol s1, symbol s2);
 void debug_symbol(symbol the_symbol);
 int symbol_true(symbol the_symbol);
 int symbol_bound(symbol the_symbol);
 void write_shape_symbol_to_canvas(symbol shape, canvas * the_canvas);
-void free_symbol(symbol the_symbol);
 
 #endif

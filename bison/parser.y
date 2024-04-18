@@ -25,7 +25,7 @@ const char * token_type_to_string(size_t category);
 }
 
 %token <the_ast> STRING ENDMARKER NEWLINE COMMENT FALSE TRUE FOR CANVAS
-%token <the_ast> COLOR RECTANGLE CIRCLE ELLIPSE SQUARE LINE TO FROM POINT RANGE
+%token <the_ast> COLOR RECTANGLE CIRCLE ELLIPSE LINE TO FROM POINT RANGE
 %token <the_ast> APPEND NORTH EAST SOUTH WEST WRITE NAME NUMBER LPAR
 %token <the_ast> RPAR COMMA PLUS MINUS STAR SLASH LAND LOR LESS
 %token <the_ast> GREATER EQUAL PERCENT LBRACE RBRACE EQEQUAL NOTEQUAL LESSEQUAL
@@ -428,7 +428,6 @@ const char * token_type_to_string(size_t category) {
     case RECTANGLE:     return "rectangle";
     case CIRCLE:        return "circle";
     case ELLIPSE:       return "ellipse";
-    case SQUARE:        return "square";
     case LINE:          return "line";
     case TO:            return "to";
     case FROM:          return "from";

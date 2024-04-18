@@ -16,7 +16,7 @@ canvas(height(1080), width(1920), color(0, 0, 0)) {
                      )
       l = line(from(rect), to(p), color(0, 35, 66), thickness(5))
       pivot = 10.0
-      if((i > pivot) || (i < 2)) {
+      if(i - 3 > pivot || i < 2) {
         write(ellip)
       }
       if(i < pivot) {
@@ -26,4 +26,7 @@ canvas(height(1080), width(1920), color(0, 0, 0)) {
       }
     }
   }
+  l = 10.0
+  s = l + " string"
+  st = "some" + l
 }

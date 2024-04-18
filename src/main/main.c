@@ -15,11 +15,11 @@ int main(void) {
     exit(1);
   }
   yyparse();
-  debug_ast(head, 0);
+  // debug_ast(head, 0);
   canvas the_canvas = execute_canvas_declaration(head, &st);
   write_canvas_png(the_canvas, "first_picture.png");
   free_canvas(the_canvas);
-  debug_symbol_table(st);
+  // debug_symbol_table(st);
   free_symbol_table(st);
   free_ast(head);
   fclose(yyin);

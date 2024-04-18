@@ -49,8 +49,7 @@ symbol init_symbol(const void * value, ncl_type type) {
 symbol_value to_string(const void * value) {
   symbol_value the_symbol_value = {0};
   const char * str_value = (const char *)value;
-  size_t str_len = strnlen(str_value, MAX_SYMBOL_BYTES) + 1;
-  the_symbol_value.the_string = calloc(str_len, sizeof(char));
+  size_t str_len = strnlen(str_value, MAX_STRING_LEN) + 1;
   strncpy(the_symbol_value.the_string, value, str_len);
   return the_symbol_value;
 }
@@ -149,25 +148,44 @@ symbol_value to_line(const void * value) {
 
 symbol add_symbol(symbol s1, symbol s2) {
   symbol ret = {0};
-  assert_symbol_type_compatability(s1, s2);
+  assert_add_symbol_type_compatability(s1, s2);
   switch(s1.type) {
     case NCL_STRING:
-      symbol concat_string = {0};
-      size_t s1_len = strnlen(s1.value.the_string, MAX_SYMBOL_BYTES);
-      size_t s2_len = strnlen(s2.value.the_string, MAX_SYMBOL_BYTES);
-      size_t concat_string_len = s1_len + s2_len + 1;
-      concat_string.value.the_string = calloc(concat_string_len, sizeof(char));
-      strncat(concat_string.value.the_string, s1.value.the_string, s1_len);
-      strncat(concat_string.value.the_string + s1_len, s2.value.the_string, s2_len + 1);
+      ret.type = NCL_STRING;
+      if(s2.type == NCL_STRING) {
+        concat_string(s1.value.the_string, s2.value.the_string, ret.value.the_string);
+      } else if(s2.type == NCL_NUMBER) {
+        char buf[MAX_QTY_DIGITS] = {0};
+        sprintf(buf, "%d", (int)s2.value.the_number);
+        concat_string(s1.value.the_string, buf, ret.value.the_string);
+      } else {
+        fprintf(stderr, "[ADD_SYMBOL]: Unknown Error, Exiting\n");
+      }
       break;
     case NCL_NUMBER:
-      ret.type = NCL_NUMBER;
-      ret.value.the_number = s1.value.the_number + s2.value.the_number;
+      if(s2.type == NCL_NUMBER) {
+        ret.type = NCL_NUMBER;
+        ret.value.the_number = s1.value.the_number + s2.value.the_number;
+      } else if(s2.type == NCL_STRING) {
+        ret.type = NCL_STRING;
+        char buf[MAX_QTY_DIGITS] = {0};
+        sprintf(buf, "%d", (int)s1.value.the_number);
+        concat_string(buf, s2.value.the_string, ret.value.the_string);
+      } else {
+        fprintf(stderr, "[ADD_SYMBOL]: Unknown Error, Exiting\n");
+      }
       break;
     default:
-      OPERATOR_NOT_SUPPORTED(ADD_SYMBOL, Addition)
+      OPERATOR_NOT_SUPPORTED("ADD_SYMBOL", "Addition")
   }
   return ret;
+}
+
+void concat_string(const char * s1, const char * s2, char * ret) {
+  size_t s1_len = strnlen(s1, MAX_STRING_LEN);
+  size_t s2_len = strnlen(s2, MAX_STRING_LEN);
+  strncat(ret, s1, s1_len);
+  strncat(ret, s2, s2_len + 1);
 }
 
 symbol sub_symbol(symbol s1, symbol s2) {
@@ -179,7 +197,7 @@ symbol sub_symbol(symbol s1, symbol s2) {
       ret.value.the_number = s1.value.the_number - s2.value.the_number;
       break;
     default:
-      OPERATOR_NOT_SUPPORTED(SUB_SYMBOL, Subtraction)
+      OPERATOR_NOT_SUPPORTED("SUB_SYMBOL", "Subtraction")
   }
   return ret;
 }
@@ -193,7 +211,7 @@ symbol mult_symbol(symbol s1, symbol s2) {
       ret.value.the_number = s1.value.the_number * s2.value.the_number;
       break;
     default:
-      OPERATOR_NOT_SUPPORTED(MULT_SYMBOL, Multiplication)
+      OPERATOR_NOT_SUPPORTED("MULT_SYMBOL", "Multiplication")
   }
   return ret;
 }
@@ -207,7 +225,7 @@ symbol div_symbol(symbol s1, symbol s2) {
       ret.value.the_number = s1.value.the_number / s2.value.the_number;
       break;
     default:
-      OPERATOR_NOT_SUPPORTED(DIV_SYMBOL, Division)
+      OPERATOR_NOT_SUPPORTED("DIV_SYMBOL", "Division")
   }
   return ret;
 }
@@ -221,7 +239,7 @@ symbol mod_symbol(symbol s1, symbol s2) {
       ret.value.the_number = (int)s1.value.the_number % (int)s2.value.the_number;
       break;
     default:
-      OPERATOR_NOT_SUPPORTED(MOD_SYMBOL, Modulus)
+      OPERATOR_NOT_SUPPORTED("MOD_SYMBOL", "Modulus")
   }
   return ret;
 }
@@ -235,7 +253,7 @@ symbol less_symbol(symbol s1, symbol s2) {
       ret.value.the_bool = s1.value.the_number < s2.value.the_number;
       break;
     default:
-      OPERATOR_NOT_SUPPORTED(LESS_SYMBOL, Less than)
+      OPERATOR_NOT_SUPPORTED("LESS_SYMBOL", "Less than")
   }
   return ret;
 }
@@ -249,7 +267,7 @@ symbol great_symbol(symbol s1, symbol s2) {
       ret.value.the_bool = s1.value.the_number > s2.value.the_number;
       break;
     default:
-      OPERATOR_NOT_SUPPORTED(GREAT_SYMBOL, Greater than)
+      OPERATOR_NOT_SUPPORTED("GREAT_SYMBOL", "Greater than")
   }
   return ret;
 }
@@ -263,7 +281,7 @@ symbol less_equal_symbol(symbol s1, symbol s2) {
       ret.value.the_bool = s1.value.the_number <= s2.value.the_number;
       break;
     default:
-      OPERATOR_NOT_SUPPORTED(LESS_EQUAL_SYMBOL, Less or equal to)
+      OPERATOR_NOT_SUPPORTED("LESS_EQUAL_SYMBOL", "Less or equal to")
   }
   return ret;
 }
@@ -277,7 +295,7 @@ symbol great_equal_symbol(symbol s1, symbol s2) {
       ret.value.the_bool = s1.value.the_number >= s2.value.the_number;
       break;
     default:
-      OPERATOR_NOT_SUPPORTED(GREAT_EQUAL_SYMBOL, Greater or equal to)
+      OPERATOR_NOT_SUPPORTED("GREAT_EQUAL_SYMBOL", "Greater or equal to")
   }
   return ret;
 }
@@ -291,7 +309,7 @@ symbol eq_equal_symbol(symbol s1, symbol s2) {
       ret.value.the_bool = fabs(s1.value.the_number - s2.value.the_number) <= 0.00001;
       break;
     default:
-      OPERATOR_NOT_SUPPORTED(EQEQUAL_SYMBOL, Equal to)
+      OPERATOR_NOT_SUPPORTED("EQEQUAL_SYMBOL", "Equal to")
   }
   return ret;
 }
@@ -309,7 +327,7 @@ symbol land_symbol(symbol s1, symbol s2) {
       ret.value.the_bool = s1.value.the_bool && s2.value.the_bool;
       break;
     default:
-      OPERATOR_NOT_SUPPORTED(LAND_SYMBOL, Logical And)
+      OPERATOR_NOT_SUPPORTED("LAND_SYMBOL", "Logical And")
   }
   return ret;
 }
@@ -327,9 +345,22 @@ symbol lor_symbol(symbol s1, symbol s2) {
       ret.value.the_bool = s1.value.the_bool || s2.value.the_bool;
       break;
     default:
-      OPERATOR_NOT_SUPPORTED(GREAT_EQUAL_SYMBOL, Logical Or)
+      OPERATOR_NOT_SUPPORTED("GREAT_EQUAL_SYMBOL", "Logical Or")
   }
   return ret;
+}
+
+void assert_add_symbol_type_compatability(symbol s1, symbol s2) {
+  if(!number_and_string(s1, s2) && s1.type != s2.type) {
+    fprintf(stderr, "Value type `%s` is not compatable with value type `%s`, "
+        "Exiting\n", ncl_type_to_string(s1.type), ncl_type_to_string(s2.type));
+    exit(1);
+  }
+}
+
+int number_and_string(symbol s1, symbol s2) {
+  return (s1.type == NCL_STRING && s2.type == NCL_NUMBER)
+         || (s1.type == NCL_NUMBER && s2.type == NCL_STRING);
 }
 
 void assert_symbol_type_compatability(symbol s1, symbol s2) {
@@ -409,10 +440,4 @@ void write_shape_symbol_to_canvas(symbol shape, canvas * the_canvas) {
           "type `%s` to canvas, Exiting\n", ncl_type_to_string(shape.type));
       exit(1);
   }
-}
-
-void free_symbol(symbol the_symbol) {
-  if(the_symbol.type == NCL_STRING)
-    if(the_symbol.value.the_string)
-      free(the_symbol.value.the_string);
 }

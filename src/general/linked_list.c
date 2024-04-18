@@ -45,7 +45,6 @@ symbol_ll update_symbol_ll(symbol_ll head, symbol_ll tail) {
   symbol_ll * tmp = &head;
   while(tmp->next) {
     if(!strncmp(tmp->name, tail.name, MAX_SYMBOL_BYTES)) {
-      free_symbol(tmp->value);
       free(tail.name);
       tmp->value = tail.value;
       return head;
@@ -53,7 +52,6 @@ symbol_ll update_symbol_ll(symbol_ll head, symbol_ll tail) {
     tmp = tmp->next;
   }
   if(!strncmp(tmp->name, tail.name, MAX_SYMBOL_BYTES)) {
-    free_symbol(tmp->value);
     free(tail.name);
     tmp->value = tail.value;
     return head;
@@ -64,7 +62,6 @@ symbol_ll update_symbol_ll(symbol_ll head, symbol_ll tail) {
 }
 
 void free_symbol_ll(symbol_ll the_symbol_ll) {
-  free_symbol(the_symbol_ll.value);
   if(the_symbol_ll.name)
     free(the_symbol_ll.name);
   if(the_symbol_ll.next)

@@ -63,7 +63,8 @@ add_executable(new_project ${SRC_FILES} ${SRC_DIR}/main/main.c)
 
 # Link libraries
 find_package(PNG REQUIRED)
-target_link_libraries(new_project PNG::PNG m)
+find_package(Freetype REQUIRED)
+target_link_libraries(new_project Freetype::Freetype PNG::PNG m)
 
 target_compile_options(new_project PRIVATE -Wall -Wextra -g)
 

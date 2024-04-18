@@ -18,7 +18,7 @@ symbol execute_expression(ast head, symbol_table * st) {
     case MINUS:
       return sub_symbol(execute_expression(head.children[0], st),
           execute_expression(head.children[2], st));
-    case NUMBER:  // This is for unary minus
+    case NUMBER: // This is for unary minus
       return_symbol.type = NCL_NUMBER;
       return_symbol.value.the_number = -atof(head.children[1].the_token.literal);
       break;

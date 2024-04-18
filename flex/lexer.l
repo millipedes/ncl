@@ -66,8 +66,6 @@ void print_unmatched_quote(char * literal, int line_no);
 "minor_axis" { return allocate_ast(MINOR_AXIS); }
 "major_axis" { return allocate_ast(MAJOR_AXIS); }
 "canvas"     { return allocate_ast(CANVAS); }
-"circle"     { return allocate_ast(CIRCLE); }
-"square"     { return allocate_ast(SQUARE); }
 "ellipse"    { return allocate_ast(ELLIPSE); }
 "rectangle"  { return allocate_ast(RECTANGLE); }
 "thickness"  { return allocate_ast(THICKNESS); }
@@ -81,30 +79,40 @@ void print_unmatched_quote(char * literal, int line_no);
 [0-9]+"."[0-9]+                 |
 [0-9]+"."[0-9]+(e|E)[-+]?[0-9]* { return allocate_ast(NUMBER); }
 
-"("   { return allocate_ast(LPAR); }
-")"   { return allocate_ast(RPAR); }
-","   { return allocate_ast(COMMA); }
-"+"   { return allocate_ast(PLUS); }
-"-"   { return allocate_ast(MINUS); }
-"*"   { return allocate_ast(STAR); }
-"/"   { return allocate_ast(SLASH); }
-"||"  { return allocate_ast(LOR); }
-"&&"  { return allocate_ast(LAND); }
-"<"   { return allocate_ast(LESS); }
-">"   { return allocate_ast(GREATER); }
-"="   { return allocate_ast(EQUAL); }
-"%"   { return allocate_ast(PERCENT); }
-"{"   { return allocate_ast(LBRACE); }
-"}"   { return allocate_ast(RBRACE); }
-"=="  { return allocate_ast(EQEQUAL); }
-"!="  { return allocate_ast(NOTEQUAL); }
-"<="  { return allocate_ast(LESSEQUAL); }
-">="  { return allocate_ast(GREATEREQUAL); }
+"("  { return allocate_ast(LPAR); }
+")"  { return allocate_ast(RPAR); }
+","  { return allocate_ast(COMMA); }
+"+"  { return allocate_ast(PLUS); }
+"-"  { return allocate_ast(MINUS); }
+"*"  { return allocate_ast(STAR); }
+"/"  { return allocate_ast(SLASH); }
+"||" { return allocate_ast(LOR); }
+"&&" { return allocate_ast(LAND); }
+"<"  { return allocate_ast(LESS); }
+">"  { return allocate_ast(GREATER); }
+"="  { return allocate_ast(EQUAL); }
+"%"  { return allocate_ast(PERCENT); }
+"{"  { return allocate_ast(LBRACE); }
+"}"  { return allocate_ast(RBRACE); }
+"==" { return allocate_ast(EQEQUAL); }
+"!=" { return allocate_ast(NOTEQUAL); }
+"<=" { return allocate_ast(LESSEQUAL); }
+">=" { return allocate_ast(GREATEREQUAL); }
 %%
 
 int allocate_ast(size_t category) {
   if(!IS_UNNECESSARY_TOK(category))
-    yylval.the_ast = init_ast(init_token(yytext, category), category);
+    if(category != STRING) {
+      yylval.the_ast = init_ast(init_token(yytext, category), category);
+    } else { // yytext has the "\""s
+      char * buf = NULL;
+      size_t len = strnlen(yytext, 1024);
+      buf = calloc(len, sizeof(char));
+      strncat(buf, yytext + 1, len - 2); // don't want the close " or \0
+      buf[len - 1] = '\0';               // play nice with str* funcs
+      yylval.the_ast = init_ast(init_token(buf, category), category);
+      free(buf);
+    }
   else
     yylval.the_ast = (ast){0};
   return category;
